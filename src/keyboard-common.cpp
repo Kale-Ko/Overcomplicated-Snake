@@ -10,7 +10,7 @@
 #include <algorithm>
 
 namespace Snake {
-    static std::map<Snake::Key, std::vector<std::string>> keyCodeToStrings = {
+    static std::map<Snake::Key_t, std::vector<std::string>> keyCodeToStrings = {
         { Snake::Key::KEY_A, { "a", "A", "A", "a" } },
         { Snake::Key::KEY_B, { "b", "B", "B", "b" } },
         { Snake::Key::KEY_C, { "c", "C", "C", "c" } },
@@ -69,7 +69,7 @@ namespace Snake {
         { Snake::Key::KEY_UNKOWN, { "", "", "", "" } }
     };
 
-    std::string getStringFromKeyCode(Snake::Key code, int modifiers) {
+    std::string getStringFromKeyCode(Snake::Key_t code, Snake::KeyMod_t modifiers) {
         if (keyCodeToStrings.contains(code)) {
             std::vector<std::string> vector = keyCodeToStrings.at(code);
 

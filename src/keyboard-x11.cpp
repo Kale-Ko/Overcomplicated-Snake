@@ -5,7 +5,7 @@
 #include <X11/Xatom.h>
 
 namespace Snake {
-    static std::map<int, Snake::Key> scanCodeToKeyCode = {
+    static std::map<int, Snake::Key_t> scanCodeToKeyCode = {
         { XK_a, Snake::Key::KEY_A },
         { XK_b, Snake::Key::KEY_B },
         { XK_c, Snake::Key::KEY_C },
@@ -85,7 +85,7 @@ namespace Snake {
         { XK_Super_R, Snake::Key::KEY_META },
         { XK_Caps_Lock, Snake::Key::KEY_CAPS_LOCK }
     };
-    static std::map<int, Snake::Button> scanCodeToButtonCode = {
+    static std::map<int, Snake::Button_t> scanCodeToButtonCode = {
         { 0x01, Snake::Button::BUTTON_LEFT },
         { 0x03, Snake::Button::BUTTON_RIGHT },
         { 0x02, Snake::Button::BUTTON_MIDDLE },
@@ -100,7 +100,7 @@ namespace Snake {
     Snake::KeyStruct getKeyFromScanCode(int scanCode, int modifiers, void* extra) {
         scanCode = XLookupKeysym((XKeyEvent*)extra, 0);
 
-        Snake::Key key;
+        Snake::Key_t key;
         if (scanCodeToKeyCode.contains(scanCode)) {
             key = scanCodeToKeyCode.at(scanCode);
         }
@@ -131,7 +131,7 @@ namespace Snake {
     }
 
     Snake::ButtonStruct getButtonFromScanCode(int scanCode, int modifiers, void* extra) {
-        Snake::Button button;
+        Snake::Button_t button;
         if (scanCodeToButtonCode.contains(scanCode)) {
             button = scanCodeToButtonCode.at(scanCode);
         }
