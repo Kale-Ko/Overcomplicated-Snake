@@ -12,9 +12,9 @@ LN_OPTIONS=-L/usr/lib -l glfw -l wayland-client -l X11 -l vulkan -l GL
 # Build all executables
 build: buildRelease buildDebug
 # Build all release executables
-buildRelease: out/${EXEC}-glfw-vulkan out/${EXEC}-glfw-gl out/${EXEC}-wayland-vulkan out/${EXEC}-wayland-gl out/${EXEC}-x11-vulkan out/${EXEC}-x11-gl
+buildRelease: out/${EXEC}-glfw-vulkan out/${EXEC}-glfw-gl/${EXEC}-x11-vulkan out/${EXEC}-x11-gl
 # Build all debug executables
-buildDebug: out/${EXEC}-glfw-vulkan-debug out/${EXEC}-glfw-gl-debug out/${EXEC}-wayland-vulkan-debug out/${EXEC}-wayland-gl-debug out/${EXEC}-x11-vulkan-debug out/${EXEC}-x11-gl-debug
+buildDebug: out/${EXEC}-glfw-vulkan-debug out/${EXEC}-glfw-gl-debug out/${EXEC}-x11-vulkan-debug out/${EXEC}-x11-gl-debug
 
 
 # Main executable (glfw & vulkan variant)
@@ -50,20 +50,20 @@ out/${EXEC}-glfw-gl-debug: build/main-debug.o build/window-glfw-debug.o build/wi
 	g++ build/main-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-gl-debug.o -o out/${EXEC}-glfw-gl-debug ${LN_OPTIONS} -Og -g3
 
 # Main executable (wayland & gl variant)
-out/${EXEC}-wayland-gl: build/main.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-gl.o
+out/${EXEC}-wayland-gl: build/main.o build/game.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-gl.o
 	@ mkdir -p out/
-	g++ build/main.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-gl.o -o out/${EXEC}-wayland-gl ${LN_OPTIONS} -O2
-out/${EXEC}-wayland-gl-debug: build/main-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-gl-debug.o
+	g++ build/main.o build/game.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-gl.o -o out/${EXEC}-wayland-gl ${LN_OPTIONS} -O2
+out/${EXEC}-wayland-gl-debug: build/main-debug.o build/game-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-gl-debug.o
 	@ mkdir -p out/
-	g++ build/main-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-gl-debug.o -o out/${EXEC}-wayland-gl-debug ${LN_OPTIONS} -Og -g3
+	g++ build/main-debug.o build/game-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-gl-debug.o -o out/${EXEC}-wayland-gl-debug ${LN_OPTIONS} -Og -g3
 
 # Main executable (x11 & gl variant)
-out/${EXEC}-x11-gl: build/main.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-gl.o
+out/${EXEC}-x11-gl: build/main.o build/game.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-gl.o
 	@ mkdir -p out/
-	g++ build/main.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-gl.o -o out/${EXEC}-x11-gl ${LN_OPTIONS} -O2
-out/${EXEC}-x11-gl-debug: build/main-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-gl-debug.o
+	g++ build/main.o build/game.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-gl.o -o out/${EXEC}-x11-gl ${LN_OPTIONS} -O2
+out/${EXEC}-x11-gl-debug: build/main-debug.o build/game-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-gl-debug.o
 	@ mkdir -p out/
-	g++ build/main-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-gl-debug.o -o out/${EXEC}-x11-gl-debug ${LN_OPTIONS} -Og -g3
+	g++ build/main-debug.o build/game-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-gl-debug.o -o out/${EXEC}-x11-gl-debug ${LN_OPTIONS} -Og -g3
 
 
 # main.cpp
@@ -73,6 +73,14 @@ build/main.o: src/main.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 build/main-debug.o: src/main.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
 	g++ -c src/main.cpp -o build/main-debug.o ${CPP_OPTIONS} -Og -g3
+
+# game.cpp
+build/game.o: src/game.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
+	@ mkdir -p build/
+	g++ -c src/game.cpp -o build/game.o ${CPP_OPTIONS} -O2
+build/game-debug.o: src/game.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
+	@ mkdir -p build/
+	g++ -c src/game.cpp -o build/game-debug.o ${CPP_OPTIONS} -Og -g3
 
 # window.cpp (glfw variant)
 build/window-glfw.o: src/window-glfw.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
