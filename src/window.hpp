@@ -47,7 +47,7 @@ namespace Snake {
         long windowId;
         void* windowStruct;
 
-        Snake::EventManager eventManager;
+        Snake::EventManager eventManager = Snake::EventManager();
 
     public:
         Window(unsigned char* title, Snake::WindowIcon* icon, Snake::WindowSize size, bool resizable, Snake::WindowPosition position, Snake::WindowPositionAlign positionAlign, bool mouseLockEnabled);

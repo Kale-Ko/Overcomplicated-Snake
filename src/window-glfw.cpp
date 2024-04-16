@@ -198,7 +198,6 @@ namespace Snake {
         }
 
         this->windowStruct = new Snake::GLFWWindowStruct();
-        this->eventManager = Snake::EventManager();
         Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
         this->initialized = true;
 

@@ -195,7 +195,6 @@ namespace Snake {
         }
 
         this->windowStruct = new Snake::X11WindowStruct();
-        this->eventManager = Snake::EventManager();
         Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*)this->windowStruct;
         this->initialized = true;
 

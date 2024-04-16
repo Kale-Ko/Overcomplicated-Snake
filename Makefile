@@ -12,7 +12,7 @@ LN_OPTIONS=-L/usr/lib -l glfw -l wayland-client -l X11 -l vulkan -l GL
 # Build all executables
 build: buildRelease buildDebug
 # Build all release executables
-buildRelease: out/${EXEC}-glfw-vulkan out/${EXEC}-glfw-gl/${EXEC}-x11-vulkan out/${EXEC}-x11-gl
+buildRelease: out/${EXEC}-glfw-vulkan out/${EXEC}-glfw-gl out/${EXEC}-x11-vulkan out/${EXEC}-x11-gl
 # Build all debug executables
 buildDebug: out/${EXEC}-glfw-vulkan-debug out/${EXEC}-glfw-gl-debug out/${EXEC}-x11-vulkan-debug out/${EXEC}-x11-gl-debug
 
