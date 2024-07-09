@@ -1,7 +1,6 @@
 #include "keyboard.hpp"
 
 #include <cstdlib>
-#include <cmath>
 #include <cstring>
 
 #include <string>
@@ -10,7 +9,7 @@
 #include <algorithm>
 
 namespace Snake {
-    static std::map<Snake::Key_t, std::vector<std::string>> keyCodeToStrings = {
+    const static std::map<const Snake::Key_t, const std::vector<const char*>> keyCodeToStrings = {
         { Snake::Key::KEY_A, { "a", "A", "A", "a" } },
         { Snake::Key::KEY_B, { "b", "B", "B", "b" } },
         { Snake::Key::KEY_C, { "c", "C", "C", "c" } },
@@ -66,31 +65,46 @@ namespace Snake {
         { Snake::Key::KEY_BACKSPACE, { "\b", "\b", "\b", "\b" } },
         { Snake::Key::KEY_TAB, { "\t", "\t", "\t", "\t" } },
 
-        { Snake::Key::KEY_UNKOWN, { "", "", "", "" } }
+        { Snake::Key::KEY_UNKOWN, { "�", "�", "�", "�" } }
     };
 
-    std::string getStringFromKeyCode(Snake::Key_t code, Snake::KeyMod_t modifiers) {
+    std::string getStringFromKeyCode(const Snake::Key_t code, const Snake::KeyMod_t modifiers) {
         if (keyCodeToStrings.contains(code)) {
-            std::vector<std::string> vector = keyCodeToStrings.at(code);
+            const std::vector<const char*> vector = keyCodeToStrings.at(code);
 
             bool shift = (modifiers & Snake::KeyMod::MOD_SHIFT) == Snake::KeyMod::MOD_SHIFT;
             bool caps = (modifiers & Snake::KeyMod::MOD_CAPS_LOCK) == Snake::KeyMod::MOD_CAPS_LOCK;
 
             if (shift && !caps) {
-                return vector.at(1);
+                const char* ogData = vector.at(1);
+                char* data = (char*)malloc(strlen(ogData));
+                strcpy(data, ogData);
+                return std::string(data);
             }
             else if (shift && caps) {
-                return vector.at(3);
+                const char* ogData = vector.at(3);
+                char* data = (char*)malloc(strlen(ogData));
+                strcpy(data, ogData);
+                return std::string(data);
             }
             else if (!shift && caps) {
-                return vector.at(2);
+                const char* ogData = vector.at(2);
+                char* data = (char*)malloc(strlen(ogData));
+                strcpy(data, ogData);
+                return std::string(data);
             }
             else {
-                return vector.at(0);
+                const char* ogData = vector.at(0);
+                char* data = (char*)malloc(strlen(ogData));
+                strcpy(data, ogData);
+                return std::string(data);
             }
         }
         else {
-            return keyCodeToStrings.at(Snake::Key::KEY_UNKOWN)[0];
+            const char* ogData = keyCodeToStrings.at(Snake::Key::KEY_UNKOWN)[0];
+            char* data = (char*)malloc(strlen(ogData));
+            strcpy(data, ogData);
+            return std::string(data);
         }
     }
 };

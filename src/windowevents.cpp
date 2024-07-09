@@ -3,7 +3,6 @@
 #include "keyboard.hpp"
 
 #include <cstdlib>
-#include <cmath>
 #include <cstring>
 #include <vector>
 #include <algorithm>
@@ -53,177 +52,243 @@ namespace Snake {
         this->windowUnfocusListeners.erase(std::remove(this->windowUnfocusListeners.begin(), this->windowUnfocusListeners.end(), listener), this->windowUnfocusListeners.end());
     }
 
-    void Snake::EventManager::emitWindowResizeEvent(int width, int height)
+    void Snake::EventManager::emitWindowCloseEvent()
     {
-        for (void (*listener)(int width, int height) : this->windowResizeListeners)
+        for (void (*listener)() : this->windowCloseListeners)
+        {
+            listener();
+        }
+    }
+
+    void Snake::EventManager::registerWindowCloseListener(void (*listener)())
+    {
+        this->windowCloseListeners.push_back(listener);
+    }
+
+    void Snake::EventManager::unregisterWindowCloseListener(void (*listener)())
+    {
+        this->windowCloseListeners.erase(std::remove(this->windowCloseListeners.begin(), this->windowCloseListeners.end(), listener), this->windowCloseListeners.end());
+    }
+
+    void Snake::EventManager::emitWindowMoveEvent(const int x, const int y)
+    {
+        for (void (*listener)(const int x, const int y) : this->windowMoveListeners)
+        {
+            listener(x, y);
+        }
+    }
+
+    void Snake::EventManager::registerWindowMoveListener(void (*listener)(const int x, const int y))
+    {
+        this->windowMoveListeners.push_back(listener);
+    }
+
+    void Snake::EventManager::unregisterWindowMoveListener(void (*listener)(const int x, const int y))
+    {
+        this->windowMoveListeners.erase(std::remove(this->windowMoveListeners.begin(), this->windowMoveListeners.end(), listener), this->windowMoveListeners.end());
+    }
+
+    void Snake::EventManager::emitWindowResizeEvent(const int width, int height)
+    {
+        for (void (*listener)(const int width, int height) : this->windowResizeListeners)
         {
             listener(width, height);
         }
     }
 
-    void Snake::EventManager::registerWindowResizeListener(void (*listener)(int width, int height))
+    void Snake::EventManager::registerWindowResizeListener(void (*listener)(const int width, int height))
     {
         this->windowResizeListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterWindowResizeListener(void (*listener)(int width, int height))
+    void Snake::EventManager::unregisterWindowResizeListener(void (*listener)(const int width, int height))
     {
         this->windowResizeListeners.erase(std::remove(this->windowResizeListeners.begin(), this->windowResizeListeners.end(), listener), this->windowResizeListeners.end());
     }
 
-    void Snake::EventManager::emitMouseMoveEvent(int x, int y)
+    void Snake::EventManager::emitMouseMoveEvent(const int x, const int y)
     {
-        for (void (*listener)(int x, int y) : this->mouseMoveListeners)
+        for (void (*listener)(const int x, const int y) : this->mouseMoveListeners)
         {
             listener(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseMoveListener(void (*listener)(int x, int y))
+    void Snake::EventManager::registerMouseMoveListener(void (*listener)(const int x, const int y))
     {
         this->mouseMoveListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterMouseMoveListener(void (*listener)(int x, int y))
+    void Snake::EventManager::unregisterMouseMoveListener(void (*listener)(const int x, const int y))
     {
         this->mouseMoveListeners.erase(std::remove(this->mouseMoveListeners.begin(), this->mouseMoveListeners.end(), listener), this->mouseMoveListeners.end());
     }
 
-    void Snake::EventManager::emitMouseScrollEvent(int x, int y)
+    void Snake::EventManager::emitMouseScrollEvent(const int x, const int y)
     {
-        for (void (*listener)(int x, int y) : this->mouseScrollListeners)
+        for (void (*listener)(const int x, const int y) : this->mouseScrollListeners)
         {
             listener(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseScrollListener(void (*listener)(int x, int y))
+    void Snake::EventManager::registerMouseScrollListener(void (*listener)(const int x, const int y))
     {
         this->mouseScrollListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterMouseScrollListener(void (*listener)(int x, int y))
+    void Snake::EventManager::unregisterMouseScrollListener(void (*listener)(const int x, const int y))
     {
         this->mouseScrollListeners.erase(std::remove(this->mouseScrollListeners.begin(), this->mouseScrollListeners.end(), listener), this->mouseScrollListeners.end());
     }
 
-    void Snake::EventManager::emitKeyDownEvent(int scanCode, int modifiers)
+    void Snake::EventManager::emitButtonPressEvent(const int scanCode, const int modifiers)
     {
-        Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, NULL);
-
-        for (void (*listener)(Snake::KeyStruct key) : this->keyDownListeners)
-        {
-            listener(key);
-        }
+        throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitKeyDownEvent(int scanCode, int modifiers, void* extra)
+    void Snake::EventManager::emitButtonPressEvent(const int scanCode, const int modifiers, const void* const extra)
     {
-        Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
+        const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
-        for (void (*listener)(Snake::KeyStruct key) : this->keyDownListeners)
-        {
-            listener(key);
-        }
-    }
-
-    void Snake::EventManager::registerKeyDownListener(void (*listener)(Snake::KeyStruct key))
-    {
-        this->keyDownListeners.push_back(listener);
-    }
-
-    void Snake::EventManager::unregisterKeyDownListener(void (*listener)(Snake::KeyStruct key))
-    {
-        this->keyDownListeners.erase(std::remove(this->keyDownListeners.begin(), this->keyDownListeners.end(), listener), this->keyDownListeners.end());
-    }
-
-    void Snake::EventManager::emitKeyUpEvent(int scanCode, int modifiers)
-    {
-        Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, NULL);
-
-        for (void (*listener)(Snake::KeyStruct key) : this->keyUpListeners)
-        {
-            listener(key);
-        }
-    }
-
-    void Snake::EventManager::emitKeyUpEvent(int scanCode, int modifiers, void* extra)
-    {
-        Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
-
-        for (void (*listener)(Snake::KeyStruct key) : this->keyUpListeners)
-        {
-            listener(key);
-        }
-    }
-
-    void Snake::EventManager::registerKeyUpListener(void (*listener)(Snake::KeyStruct key))
-    {
-        this->keyUpListeners.push_back(listener);
-    }
-
-    void Snake::EventManager::unregisterKeyUpListener(void (*listener)(Snake::KeyStruct key))
-    {
-        this->keyUpListeners.erase(std::remove(this->keyUpListeners.begin(), this->keyUpListeners.end(), listener), this->keyUpListeners.end());
-    }
-
-    void Snake::EventManager::emitButtonDownEvent(int scanCode, int modifiers)
-    {
-        Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, NULL);
-
-        for (void (*listener)(Snake::ButtonStruct button) : this->buttonDownListeners)
+        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonPressListeners)
         {
             listener(button);
         }
     }
 
-    void Snake::EventManager::emitButtonDownEvent(int scanCode, int modifiers, void* extra)
+    void Snake::EventManager::registerButtonPressListener(void (*listener)(const Snake::ButtonStruct button))
     {
-        Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
+        this->buttonPressListeners.push_back(listener);
+    }
 
-        for (void (*listener)(Snake::ButtonStruct button) : this->buttonDownListeners)
+    void Snake::EventManager::unregisterButtonPressListener(void (*listener)(const Snake::ButtonStruct button))
+    {
+        this->buttonPressListeners.erase(std::remove(this->buttonPressListeners.begin(), this->buttonPressListeners.end(), listener), this->buttonPressListeners.end());
+    }
+
+    void Snake::EventManager::emitButtonDownEvent(const int scanCode, const int modifiers)
+    {
+        throw "Unimplemented";
+    }
+
+    void Snake::EventManager::emitButtonDownEvent(const int scanCode, const int modifiers, const void* const extra)
+    {
+        const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
+
+        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonDownListeners)
         {
             listener(button);
         }
     }
 
-    void Snake::EventManager::registerButtonDownListener(void (*listener)(Snake::ButtonStruct button))
+    void Snake::EventManager::registerButtonDownListener(void (*listener)(const Snake::ButtonStruct button))
     {
         this->buttonDownListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterButtonDownListener(void (*listener)(Snake::ButtonStruct button))
+    void Snake::EventManager::unregisterButtonDownListener(void (*listener)(const Snake::ButtonStruct button))
     {
         this->buttonDownListeners.erase(std::remove(this->buttonDownListeners.begin(), this->buttonDownListeners.end(), listener), this->buttonDownListeners.end());
     }
 
-    void Snake::EventManager::emitButtonUpEvent(int scanCode, int modifiers)
+    void Snake::EventManager::emitButtonUpEvent(const int scanCode, const int modifiers)
     {
-        Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, NULL);
+        throw "Unimplemented";
+    }
 
-        for (void (*listener)(Snake::ButtonStruct button) : this->buttonUpListeners)
+    void Snake::EventManager::emitButtonUpEvent(const int scanCode, const int modifiers, const void* const extra)
+    {
+        const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
+
+        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonUpListeners)
         {
             listener(button);
         }
     }
 
-    void Snake::EventManager::emitButtonUpEvent(int scanCode, int modifiers, void* extra)
-    {
-        Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
-
-        for (void (*listener)(Snake::ButtonStruct button) : this->buttonUpListeners)
-        {
-            listener(button);
-        }
-    }
-
-    void Snake::EventManager::registerButtonUpListener(void (*listener)(Snake::ButtonStruct button))
+    void Snake::EventManager::registerButtonUpListener(void (*listener)(const Snake::ButtonStruct button))
     {
         this->buttonUpListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterButtonUpListener(void (*listener)(Snake::ButtonStruct button))
+    void Snake::EventManager::unregisterButtonUpListener(void (*listener)(const Snake::ButtonStruct button))
     {
         this->buttonUpListeners.erase(std::remove(this->buttonUpListeners.begin(), this->buttonUpListeners.end(), listener), this->buttonUpListeners.end());
+    }
+
+    void Snake::EventManager::emitKeyPressEvent(const int scanCode, const int modifiers)
+    {
+        throw "Unimplemented";
+    }
+
+    void Snake::EventManager::emitKeyPressEvent(const int scanCode, const int modifiers, const void* const extra)
+    {
+        const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
+
+        for (void (*listener)(const Snake::KeyStruct key) : this->keyPressListeners)
+        {
+            listener(key);
+        }
+    }
+
+    void Snake::EventManager::registerKeyPressListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyPressListeners.push_back(listener);
+    }
+
+    void Snake::EventManager::unregisterKeyPressListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyPressListeners.erase(std::remove(this->keyPressListeners.begin(), this->keyPressListeners.end(), listener), this->keyPressListeners.end());
+    }
+
+    void Snake::EventManager::emitKeyDownEvent(const int scanCode, const int modifiers)
+    {
+        throw "Unimplemented";
+    }
+
+    void Snake::EventManager::emitKeyDownEvent(const int scanCode, const int modifiers, const void* const extra)
+    {
+        const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
+
+        for (void (*listener)(const Snake::KeyStruct key) : this->keyDownListeners)
+        {
+            listener(key);
+        }
+    }
+
+    void Snake::EventManager::registerKeyDownListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyDownListeners.push_back(listener);
+    }
+
+    void Snake::EventManager::unregisterKeyDownListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyDownListeners.erase(std::remove(this->keyDownListeners.begin(), this->keyDownListeners.end(), listener), this->keyDownListeners.end());
+    }
+
+    void Snake::EventManager::emitKeyUpEvent(const int scanCode, const int modifiers)
+    {
+        throw "Unimplemented";
+    }
+
+    void Snake::EventManager::emitKeyUpEvent(const int scanCode, const int modifiers, const void* const extra)
+    {
+        const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
+
+        for (void (*listener)(const Snake::KeyStruct key) : this->keyUpListeners)
+        {
+            listener(key);
+        }
+    }
+
+    void Snake::EventManager::registerKeyUpListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyUpListeners.push_back(listener);
+    }
+
+    void Snake::EventManager::unregisterKeyUpListener(void (*listener)(const Snake::KeyStruct key))
+    {
+        this->keyUpListeners.erase(std::remove(this->keyUpListeners.begin(), this->keyUpListeners.end(), listener), this->keyUpListeners.end());
     }
 };

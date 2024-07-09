@@ -11,18 +11,21 @@ namespace Snake {
     protected:
         std::vector<void (*)()> windowFocusListeners;
         std::vector<void (*)()> windowUnfocusListeners;
+        std::vector<void (*)()> windowCloseListeners;
 
-        std::vector<void (*)(int x, int y)> windowMoveListeners;
-        std::vector<void (*)(int width, int height)> windowResizeListeners;
+        std::vector<void (*)(const int x, const int y)> windowMoveListeners;
+        std::vector<void (*)(const int width, const int height)> windowResizeListeners;
 
-        std::vector<void (*)(int x, int y)> mouseMoveListeners;
-        std::vector<void (*)(int x, int y)> mouseScrollListeners;
+        std::vector<void (*)(const int x, const int y)> mouseMoveListeners;
+        std::vector<void (*)(const int x, const int y)> mouseScrollListeners;
 
-        std::vector<void (*)(Snake::KeyStruct key)> keyDownListeners;
-        std::vector<void (*)(Snake::KeyStruct key)> keyUpListeners;
+        std::vector<void (*)(const Snake::ButtonStruct button)> buttonPressListeners;
+        std::vector<void (*)(const Snake::ButtonStruct button)> buttonDownListeners;
+        std::vector<void (*)(const Snake::ButtonStruct button)> buttonUpListeners;
 
-        std::vector<void (*)(Snake::ButtonStruct button)> buttonDownListeners;
-        std::vector<void (*)(Snake::ButtonStruct button)> buttonUpListeners;
+        std::vector<void (*)(const Snake::KeyStruct key)> keyPressListeners;
+        std::vector<void (*)(const Snake::KeyStruct key)> keyDownListeners;
+        std::vector<void (*)(const Snake::KeyStruct key)> keyUpListeners;
 
     public:
         EventManager();
@@ -36,41 +39,55 @@ namespace Snake {
         void registerWindowUnfocusListener(void (*listener)());
         void unregisterWindowUnfocusListener(void (*listener)());
 
-        void emitWindowMoveEvent(int x, int y);
-        void registerWindowMoveListener(void (*listener)(int x, int y));
-        void unregisterWindowMoveListener(void (*listener)(int x, int y));
+        void emitWindowCloseEvent();
+        void registerWindowCloseListener(void (*listener)());
+        void unregisterWindowCloseListener(void (*listener)());
 
-        void emitWindowResizeEvent(int width, int height);
-        void registerWindowResizeListener(void (*listener)(int width, int height));
-        void unregisterWindowResizeListener(void (*listener)(int width, int height));
+        void emitWindowMoveEvent(const int x, const int y);
+        void registerWindowMoveListener(void (*listener)(const int x, const int y));
+        void unregisterWindowMoveListener(void (*listener)(const int x, const int y));
 
-        void emitMouseMoveEvent(int x, int y);
-        void registerMouseMoveListener(void (*listener)(int x, int y));
-        void unregisterMouseMoveListener(void (*listener)(int x, int y));
+        void emitWindowResizeEvent(const int width, const int height);
+        void registerWindowResizeListener(void (*listener)(const int width, const int height));
+        void unregisterWindowResizeListener(void (*listener)(const int width, const int height));
 
-        void emitMouseScrollEvent(int x, int y);
-        void registerMouseScrollListener(void (*listener)(int x, int y));
-        void unregisterMouseScrollListener(void (*listener)(int x, int y));
+        void emitMouseMoveEvent(const int x, const int y);
+        void registerMouseMoveListener(void (*listener)(const int x, const int y));
+        void unregisterMouseMoveListener(void (*listener)(const int x, const int y));
 
-        void emitKeyDownEvent(int scanCode, int modifiers);
-        void emitKeyDownEvent(int scanCode, int modifiers, void* extra);
-        void registerKeyDownListener(void (*listener)(Snake::KeyStruct key));
-        void unregisterKeyDownListener(void (*listener)(Snake::KeyStruct key));
+        void emitMouseScrollEvent(const int x, const int y);
+        void registerMouseScrollListener(void (*listener)(const int x, const int y));
+        void unregisterMouseScrollListener(void (*listener)(const int x, const int y));
 
-        void emitKeyUpEvent(int scanCode, int modifiers);
-        void emitKeyUpEvent(int scanCode, int modifiers, void* extra);
-        void registerKeyUpListener(void (*listener)(Snake::KeyStruct key));
-        void unregisterKeyUpListener(void (*listener)(Snake::KeyStruct key));
+        void emitButtonPressEvent(const int scanCode, const int modifiers);
+        void emitButtonPressEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerButtonPressListener(void (*listener)(const Snake::ButtonStruct button));
+        void unregisterButtonPressListener(void (*listener)(const Snake::ButtonStruct button));
 
-        void emitButtonDownEvent(int scanCode, int modifiers);
-        void emitButtonDownEvent(int scanCode, int modifiers, void*);
-        void registerButtonDownListener(void (*listener)(Snake::ButtonStruct button));
-        void unregisterButtonDownListener(void (*listener)(Snake::ButtonStruct button));
+        void emitButtonDownEvent(const int scanCode, const int modifiers);
+        void emitButtonDownEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerButtonDownListener(void (*listener)(const Snake::ButtonStruct button));
+        void unregisterButtonDownListener(void (*listener)(const Snake::ButtonStruct button));
 
-        void emitButtonUpEvent(int scanCode, int modifiers);
-        void emitButtonUpEvent(int scanCode, int modifiers, void*);
-        void registerButtonUpListener(void (*listener)(Snake::ButtonStruct button));
-        void unregisterButtonUpListener(void (*listener)(Snake::ButtonStruct button));
+        void emitButtonUpEvent(const int scanCode, const int modifiers);
+        void emitButtonUpEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerButtonUpListener(void (*listener)(const Snake::ButtonStruct button));
+        void unregisterButtonUpListener(void (*listener)(const Snake::ButtonStruct button));
+
+        void emitKeyPressEvent(const int scanCode, const int modifiers);
+        void emitKeyPressEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerKeyPressListener(void (*listener)(const Snake::KeyStruct key));
+        void unregisterKeyPressListener(void (*listener)(const Snake::KeyStruct key));
+
+        void emitKeyDownEvent(const int scanCode, const int modifiers);
+        void emitKeyDownEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerKeyDownListener(void (*listener)(const Snake::KeyStruct key));
+        void unregisterKeyDownListener(void (*listener)(const Snake::KeyStruct key));
+
+        void emitKeyUpEvent(const int scanCode, const int modifiers);
+        void emitKeyUpEvent(const int scanCode, const int modifiers, const void* const extra);
+        void registerKeyUpListener(void (*listener)(const Snake::KeyStruct key));
+        void unregisterKeyUpListener(void (*listener)(const Snake::KeyStruct key));
     };
 };
 #endif
