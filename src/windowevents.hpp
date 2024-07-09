@@ -13,11 +13,11 @@ namespace Snake {
         std::vector<void (*)()> windowUnfocusListeners;
         std::vector<void (*)()> windowCloseListeners;
 
-        std::vector<void (*)(const int x, const int y)> windowMoveListeners;
-        std::vector<void (*)(const int width, const int height)> windowResizeListeners;
+        std::vector<void (*)(const signed int x, const signed int y)> windowMoveListeners;
+        std::vector<void (*)(const unsigned int width, const unsigned int height)> windowResizeListeners;
 
-        std::vector<void (*)(const int x, const int y)> mouseMoveListeners;
-        std::vector<void (*)(const int x, const int y)> mouseScrollListeners;
+        std::vector<void (*)(const signed int x, const signed int y)> mouseMoveListeners;
+        std::vector<void (*)(const signed int x, const signed int y)> mouseScrollListeners;
 
         std::vector<void (*)(const Snake::ButtonStruct button)> buttonPressListeners;
         std::vector<void (*)(const Snake::ButtonStruct button)> buttonDownListeners;
@@ -43,21 +43,21 @@ namespace Snake {
         void registerWindowCloseListener(void (*listener)());
         void unregisterWindowCloseListener(void (*listener)());
 
-        void emitWindowMoveEvent(const int x, const int y);
-        void registerWindowMoveListener(void (*listener)(const int x, const int y));
-        void unregisterWindowMoveListener(void (*listener)(const int x, const int y));
+        void emitWindowMoveEvent(const signed int x, const signed int y);
+        void registerWindowMoveListener(void (*listener)(const signed int x, const signed int y));
+        void unregisterWindowMoveListener(void (*listener)(const signed int x, const signed int y));
 
-        void emitWindowResizeEvent(const int width, const int height);
-        void registerWindowResizeListener(void (*listener)(const int width, const int height));
-        void unregisterWindowResizeListener(void (*listener)(const int width, const int height));
+        void emitWindowResizeEvent(const unsigned int width, const unsigned int height);
+        void registerWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height));
+        void unregisterWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height));
 
-        void emitMouseMoveEvent(const int x, const int y);
-        void registerMouseMoveListener(void (*listener)(const int x, const int y));
-        void unregisterMouseMoveListener(void (*listener)(const int x, const int y));
+        void emitMouseMoveEvent(const signed int x, const signed int y);
+        void registerMouseMoveListener(void (*listener)(const signed int x, const signed int y));
+        void unregisterMouseMoveListener(void (*listener)(const signed int x, const signed int y));
 
-        void emitMouseScrollEvent(const int x, const int y);
-        void registerMouseScrollListener(void (*listener)(const int x, const int y));
-        void unregisterMouseScrollListener(void (*listener)(const int x, const int y));
+        void emitMouseScrollEvent(const signed int x, const signed int y);
+        void registerMouseScrollListener(void (*listener)(const signed int x, const signed int y));
+        void unregisterMouseScrollListener(void (*listener)(const signed int x, const signed int y));
 
         void emitButtonPressEvent(const int scanCode, const int modifiers);
         void emitButtonPressEvent(const int scanCode, const int modifiers, const void* const extra);

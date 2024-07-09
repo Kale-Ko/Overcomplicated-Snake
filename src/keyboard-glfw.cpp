@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 namespace Snake {
-    const static std::map<const int, const Snake::Key_t> scanCodeToKeyCode = {
+    const static std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
         { GLFW_KEY_A, Snake::Key::KEY_A },
         { GLFW_KEY_B, Snake::Key::KEY_B },
         { GLFW_KEY_C, Snake::Key::KEY_C },
@@ -83,7 +83,7 @@ namespace Snake {
         { GLFW_KEY_RIGHT_SUPER, Snake::Key::KEY_META },
         { GLFW_KEY_CAPS_LOCK, Snake::Key::KEY_CAPS_LOCK }
     };
-    const static std::map<const int, const Snake::Button_t> scanCodeToButtonCode = {
+    const static std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
         { GLFW_MOUSE_BUTTON_LEFT, Snake::Button::BUTTON_LEFT },
         { GLFW_MOUSE_BUTTON_RIGHT, Snake::Button::BUTTON_RIGHT },
         { GLFW_MOUSE_BUTTON_MIDDLE, Snake::Button::BUTTON_MIDDLE },
@@ -95,7 +95,7 @@ namespace Snake {
         { GLFW_MOUSE_BUTTON_8, Snake::Button::BUTTON_EXTRA5 }
     };
 
-    const Snake::KeyStruct getKeyFromScanCode(const int scanCode, const int scanMods, const void* const extra) {
+    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra) {
         Snake::Key_t key;
         if (scanCodeToKeyCode.contains(scanCode)) {
             key = scanCodeToKeyCode.at(scanCode);
@@ -126,7 +126,7 @@ namespace Snake {
         return KeyStruct{ .scanCode = scanCode, .code = key, .modifiers = keyMods, .string = string };
     }
 
-    const Snake::ButtonStruct getButtonFromScanCode(const int scanCode, const int scanMods, const void* const extra) {
+    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra) {
         Snake::Button_t button;
         if (scanCodeToButtonCode.contains(scanCode)) {
             button = scanCodeToButtonCode.at(scanCode);

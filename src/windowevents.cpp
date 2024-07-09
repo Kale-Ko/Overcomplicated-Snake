@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <cstring>
+
 #include <vector>
 #include <algorithm>
 
@@ -70,74 +71,74 @@ namespace Snake {
         this->windowCloseListeners.erase(std::remove(this->windowCloseListeners.begin(), this->windowCloseListeners.end(), listener), this->windowCloseListeners.end());
     }
 
-    void Snake::EventManager::emitWindowMoveEvent(const int x, const int y)
+    void Snake::EventManager::emitWindowMoveEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const int x, const int y) : this->windowMoveListeners)
+        for (void (*listener)(const signed int x, const signed int y) : this->windowMoveListeners)
         {
             listener(x, y);
         }
     }
 
-    void Snake::EventManager::registerWindowMoveListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::registerWindowMoveListener(void (*listener)(const signed int x, const signed int y))
     {
         this->windowMoveListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterWindowMoveListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::unregisterWindowMoveListener(void (*listener)(const signed int x, const signed int y))
     {
         this->windowMoveListeners.erase(std::remove(this->windowMoveListeners.begin(), this->windowMoveListeners.end(), listener), this->windowMoveListeners.end());
     }
 
-    void Snake::EventManager::emitWindowResizeEvent(const int width, int height)
+    void Snake::EventManager::emitWindowResizeEvent(const unsigned int width, const unsigned int height)
     {
-        for (void (*listener)(const int width, int height) : this->windowResizeListeners)
+        for (void (*listener)(const unsigned int width, const unsigned int height) : this->windowResizeListeners)
         {
             listener(width, height);
         }
     }
 
-    void Snake::EventManager::registerWindowResizeListener(void (*listener)(const int width, int height))
+    void Snake::EventManager::registerWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height))
     {
         this->windowResizeListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterWindowResizeListener(void (*listener)(const int width, int height))
+    void Snake::EventManager::unregisterWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height))
     {
         this->windowResizeListeners.erase(std::remove(this->windowResizeListeners.begin(), this->windowResizeListeners.end(), listener), this->windowResizeListeners.end());
     }
 
-    void Snake::EventManager::emitMouseMoveEvent(const int x, const int y)
+    void Snake::EventManager::emitMouseMoveEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const int x, const int y) : this->mouseMoveListeners)
+        for (void (*listener)(const signed int x, const signed int y) : this->mouseMoveListeners)
         {
             listener(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseMoveListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::registerMouseMoveListener(void (*listener)(const signed int x, const signed int y))
     {
         this->mouseMoveListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterMouseMoveListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::unregisterMouseMoveListener(void (*listener)(const signed int x, const signed int y))
     {
         this->mouseMoveListeners.erase(std::remove(this->mouseMoveListeners.begin(), this->mouseMoveListeners.end(), listener), this->mouseMoveListeners.end());
     }
 
-    void Snake::EventManager::emitMouseScrollEvent(const int x, const int y)
+    void Snake::EventManager::emitMouseScrollEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const int x, const int y) : this->mouseScrollListeners)
+        for (void (*listener)(const signed int x, const signed int y) : this->mouseScrollListeners)
         {
             listener(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseScrollListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::registerMouseScrollListener(void (*listener)(const signed int x, const signed int y))
     {
         this->mouseScrollListeners.push_back(listener);
     }
 
-    void Snake::EventManager::unregisterMouseScrollListener(void (*listener)(const int x, const int y))
+    void Snake::EventManager::unregisterMouseScrollListener(void (*listener)(const signed int x, const signed int y))
     {
         this->mouseScrollListeners.erase(std::remove(this->mouseScrollListeners.begin(), this->mouseScrollListeners.end(), listener), this->mouseScrollListeners.end());
     }

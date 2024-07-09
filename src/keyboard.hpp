@@ -109,7 +109,7 @@ namespace Snake {
     };
 
     struct KeyStruct {
-        int scanCode;
+        unsigned int scanCode;
 
         Snake::Key_t code;
         Snake::KeyMod_t modifiers;
@@ -118,14 +118,14 @@ namespace Snake {
     };
 
     struct ButtonStruct {
-        int scanCode;
+        unsigned int scanCode;
 
         Snake::Button_t code;
         Snake::KeyMod_t modifiers;
     };
 
-    const Snake::KeyStruct getKeyFromScanCode(const int scanCode, const int scanMods, const void* const extra);
-    const Snake::ButtonStruct getButtonFromScanCode(const int scanCode, const int scanMods, const void* const extra);
+    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra);
+    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra);
 
     std::string getStringFromKeyCode(const Snake::Key_t code, const Snake::KeyMod_t modifiers);
 };

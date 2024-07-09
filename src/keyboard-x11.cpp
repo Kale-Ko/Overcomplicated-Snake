@@ -5,7 +5,7 @@
 #include <X11/Xatom.h>
 
 namespace Snake {
-    const static std::map<const int, const Snake::Key_t> scanCodeToKeyCode = {
+    const static std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
         { XK_a, Snake::Key::KEY_A },
         { XK_b, Snake::Key::KEY_B },
         { XK_c, Snake::Key::KEY_C },
@@ -85,7 +85,7 @@ namespace Snake {
         { XK_Super_R, Snake::Key::KEY_META },
         { XK_Caps_Lock, Snake::Key::KEY_CAPS_LOCK }
     };
-    const static std::map<const int, const Snake::Button_t> scanCodeToButtonCode = {
+    const static std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
         { 0x01, Snake::Button::BUTTON_LEFT },
         { 0x03, Snake::Button::BUTTON_RIGHT },
         { 0x02, Snake::Button::BUTTON_MIDDLE },
@@ -97,8 +97,8 @@ namespace Snake {
         { 0x08, Snake::Button::BUTTON_EXTRA5 }
     };
 
-    const Snake::KeyStruct getKeyFromScanCode(const int scanCode, const int modifiers, const void* const extra) {
-        KeySym scanCodeSym = XLookupKeysym((XKeyEvent*)extra, 0);
+    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra) {
+        unsigned int scanCodeSym = XLookupKeysym((XKeyEvent*)extra, 0);
 
         Snake::Key_t key;
         if (scanCodeToKeyCode.contains(scanCodeSym)) {
@@ -130,7 +130,7 @@ namespace Snake {
         return KeyStruct{ .scanCode = scanCode, .code = key, .modifiers = keyMods, .string = string };
     }
 
-    const Snake::ButtonStruct getButtonFromScanCode(const int scanCode, const int modifiers, const void* const extra) {
+    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra) {
         Snake::Button_t button;
         if (scanCodeToButtonCode.contains(scanCode)) {
             button = scanCodeToButtonCode.at(scanCode);
