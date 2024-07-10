@@ -59,33 +59,33 @@ namespace Snake {
         void registerMouseScrollListener(void (*listener)(const signed int x, const signed int y));
         void unregisterMouseScrollListener(void (*listener)(const signed int x, const signed int y));
 
-        void emitButtonPressEvent(const int scanCode, const int modifiers);
-        void emitButtonPressEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerButtonPressListener(void (*listener)(const Snake::ButtonStruct button));
         void unregisterButtonPressListener(void (*listener)(const Snake::ButtonStruct button));
 
-        void emitButtonDownEvent(const int scanCode, const int modifiers);
-        void emitButtonDownEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitButtonDownEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitButtonDownEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerButtonDownListener(void (*listener)(const Snake::ButtonStruct button));
         void unregisterButtonDownListener(void (*listener)(const Snake::ButtonStruct button));
 
-        void emitButtonUpEvent(const int scanCode, const int modifiers);
-        void emitButtonUpEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitButtonUpEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitButtonUpEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerButtonUpListener(void (*listener)(const Snake::ButtonStruct button));
         void unregisterButtonUpListener(void (*listener)(const Snake::ButtonStruct button));
 
-        void emitKeyPressEvent(const int scanCode, const int modifiers);
-        void emitKeyPressEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerKeyPressListener(void (*listener)(const Snake::KeyStruct key));
         void unregisterKeyPressListener(void (*listener)(const Snake::KeyStruct key));
 
-        void emitKeyDownEvent(const int scanCode, const int modifiers);
-        void emitKeyDownEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitKeyDownEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitKeyDownEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerKeyDownListener(void (*listener)(const Snake::KeyStruct key));
         void unregisterKeyDownListener(void (*listener)(const Snake::KeyStruct key));
 
-        void emitKeyUpEvent(const int scanCode, const int modifiers);
-        void emitKeyUpEvent(const int scanCode, const int modifiers, const void* const extra);
+        void emitKeyUpEvent(const unsigned int scanCode, const unsigned int modifiers);
+        void emitKeyUpEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
         void registerKeyUpListener(void (*listener)(const Snake::KeyStruct key));
         void unregisterKeyUpListener(void (*listener)(const Snake::KeyStruct key));
     };

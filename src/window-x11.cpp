@@ -3,8 +3,9 @@
 #include "windowevents.hpp"
 
 #include <cstdlib>
-#include <cmath>
 #include <cstring>
+#include <cmath>
+
 #include <thread>
 
 #include <X11/Xlib.h>
@@ -22,7 +23,7 @@ namespace Snake {
         X11Window window;
     };
 
-    Snake::Window::Window(unsigned char* title, Snake::WindowIcon* icon, Snake::WindowSize size, bool resizable, WindowPosition position, Snake::WindowPositionAlign positionAlign, bool mouseLockEnabled) {
+    Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled) {
         this->title = title;
         this->icon = icon;
 
@@ -41,11 +42,11 @@ namespace Snake {
         }
     }
 
-    unsigned char* Snake::Window::getTitle() {
+    const char* Snake::Window::getTitle() {
         return this->title;
     }
 
-    void Snake::Window::setTitle(unsigned char* title) {
+    void Snake::Window::setTitle(const char* const title) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -62,11 +63,11 @@ namespace Snake {
         }
     }
 
-    Snake::WindowIcon* Snake::Window::getIcon() {
+    const Snake::WindowIcon* Snake::Window::getIcon() {
         return this->icon;
     }
 
-    void Snake::Window::setIcon(Snake::WindowIcon* icon) {
+    void Snake::Window::setIcon(const Snake::WindowIcon* const icon) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -94,15 +95,15 @@ namespace Snake {
         }
     }
 
-    Snake::WindowSize Snake::Window::getSize() {
+    const Snake::WindowSize Snake::Window::getSize() {
         return this->size;
     }
 
-    bool Snake::Window::isResizable() {
+    const bool Snake::Window::isResizable() {
         return this->resizable;
     }
 
-    void Snake::Window::setSize(Snake::WindowSize size) {
+    void Snake::Window::setSize(const Snake::WindowSize size) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -121,7 +122,7 @@ namespace Snake {
         }
     }
 
-    void Snake::Window::setRawSize(Snake::WindowSize size) {
+    void Snake::Window::__setSize(const Snake::WindowSize size) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -130,15 +131,15 @@ namespace Snake {
         this->size = size;
     }
 
-    Snake::WindowPosition Snake::Window::getPosition() {
+    const Snake::WindowPosition Snake::Window::getPosition() {
         return this->position;
     }
 
-    Snake::WindowPositionAlign Snake::Window::getPositionAlign() {
+    const Snake::WindowPositionAlign Snake::Window::getPositionAlign() {
         return this->positionAlign;
     }
 
-    void Snake::Window::setPosition(WindowPosition position, Snake::WindowPositionAlign align) {
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -161,7 +162,7 @@ namespace Snake {
         }
     }
 
-    void Snake::Window::setRawPosition(WindowPosition position, Snake::WindowPositionAlign align) {
+    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -171,7 +172,7 @@ namespace Snake {
         this->positionAlign = positionAlign;
     }
 
-    Snake::EventManager* Snake::Window::getEventManager() {
+    Snake::EventManager* const Snake::Window::getEventManager() {
         return &this->eventManager;
     }
 
@@ -322,7 +323,7 @@ namespace Snake {
         XRaiseWindow(windowStruct->display, windowStruct->window);
     }
 
-    void run(Snake::Window* context, Snake::X11WindowStruct* windowStruct) {
+    void run(Snake::Window* const context, Snake::X11WindowStruct* const windowStruct) {
         XSelectInput(windowStruct->display, windowStruct->window, FocusChangeMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
         Atom wmDeleteMessage = XInternAtom(windowStruct->display, "WM_DELETE_WINDOW", False);
@@ -366,27 +367,60 @@ namespace Snake {
                 context->getEventManager()->emitWindowUnfocusEvent();
 
                 break;
-            case KeyPress:
-                if (event.xkey.type != KeyPress)
+            case ClientMessage:
+                if (event.xclient.data.l[0] == wmDeleteMessage)
                 {
-                    continue;
-                }
+                    context->getEventManager()->emitWindowCloseEvent();
 
-                if (context->isMouseLocked() && event.xkey.keycode == 0x9)
-                {
-                    context->unlockMouse();
+                    context->stop();
                 }
-
-                context->getEventManager()->emitKeyDownEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
 
                 break;
-            case KeyRelease:
-                if (event.xkey.type != KeyRelease)
+            case ConfigureNotify:
+                if (event.xconfigure.type != ConfigureNotify)
                 {
                     continue;
                 }
 
-                context->getEventManager()->emitKeyUpEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
+                Snake::WindowPosition previousPosition;
+                previousPosition = context->getPosition();
+                Snake::WindowSize previousSize;
+                previousSize = context->getSize();
+
+                context->__setPosition(Snake::WindowPosition{ .x = event.xconfigure.x, .y = event.xconfigure.y }, Snake::WindowPositionAlign::TOP_LEFT); // TODO Don't change position align
+                context->__setSize(Snake::WindowSize{ .width = (unsigned int)event.xconfigure.width, .height = (unsigned int)event.xconfigure.height });
+
+                if (event.xconfigure.x != previousPosition.x || event.xconfigure.y != previousPosition.y) {
+                    context->getEventManager()->emitWindowMoveEvent(event.xconfigure.x, event.xconfigure.y);
+                }
+
+                if (event.xconfigure.width != previousSize.width || event.xconfigure.height != previousSize.height)
+                {
+                    context->getEventManager()->emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
+                }
+
+                break;
+            case MotionNotify:
+                if (event.xmotion.type != MotionNotify)
+                {
+                    continue;
+                }
+
+                if (context->isMouseLockEnabled() && context->isMouseLocked())
+                {
+                    if (event.xmotion.x == context->getSize().width / 2 && event.xmotion.y == context->getSize().height / 2)
+                    {
+                        continue;
+                    }
+
+                    context->getEventManager()->emitMouseMoveEvent(event.xmotion.x - (context->getSize().width / 2), event.xmotion.y - (context->getSize().height / 2));
+
+                    XWarpPointer(windowStruct->display, None, windowStruct->window, 0, 0, 0, 0, context->getSize().width / 2, context->getSize().height / 2);
+                }
+                else
+                {
+                    context->getEventManager()->emitMouseMoveEvent(event.xmotion.x, event.xmotion.y);
+                }
 
                 break;
             case ButtonPress:
@@ -436,52 +470,27 @@ namespace Snake {
                 context->getEventManager()->emitButtonUpEvent(event.xbutton.button > 0x07 ? event.xbutton.button - 0x04 : event.xbutton.button, event.xbutton.state, NULL);
 
                 break;
-            case MotionNotify:
-                if (event.xmotion.type != MotionNotify)
+            case KeyPress:
+                if (event.xkey.type != KeyPress)
                 {
                     continue;
                 }
 
-                if (context->isMouseLockEnabled() && context->isMouseLocked())
+                if (context->isMouseLocked() && event.xkey.keycode == 0x9)
                 {
-                    if (event.xmotion.x == context->getSize().width / 2 && event.xmotion.y == context->getSize().height / 2)
-                    {
-                        continue;
-                    }
-
-                    context->getEventManager()->emitMouseMoveEvent(event.xmotion.x - (context->getSize().width / 2), event.xmotion.y - (context->getSize().height / 2));
-
-                    XWarpPointer(windowStruct->display, None, windowStruct->window, 0, 0, 0, 0, context->getSize().width / 2, context->getSize().height / 2);
+                    context->unlockMouse();
                 }
-                else
-                {
-                    context->getEventManager()->emitMouseMoveEvent(event.xmotion.x, event.xmotion.y);
-                }
+
+                context->getEventManager()->emitKeyDownEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
 
                 break;
-            case ConfigureNotify:
-                if (event.xconfigure.type != ConfigureNotify)
+            case KeyRelease:
+                if (event.xkey.type != KeyRelease)
                 {
                     continue;
                 }
 
-                Snake::WindowSize previousSize;
-                previousSize = context->getSize();
-
-                context->setRawPosition(Snake::WindowPosition{ .x = event.xconfigure.x, .y = event.xconfigure.y }, Snake::WindowPositionAlign::TOP_LEFT); // TODO Don't change position align
-                context->setRawSize(Snake::WindowSize{ .width = (unsigned int)event.xconfigure.width, .height = (unsigned int)event.xconfigure.height });
-
-                if (event.xconfigure.width != previousSize.width || event.xconfigure.height != previousSize.height)
-                {
-                    context->getEventManager()->emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
-                }
-
-                break;
-            case ClientMessage:
-                if (event.xclient.data.l[0] == wmDeleteMessage)
-                {
-                    context->stop();
-                }
+                context->getEventManager()->emitKeyUpEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
 
                 break;
             default:
@@ -541,7 +550,7 @@ namespace Snake {
         return this->mouseLocked;
     }
 
-    inline void Snake::Window::lockMouse()
+    void Snake::Window::lockMouse()
     {
         Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*)this->windowStruct;
 
@@ -569,7 +578,7 @@ namespace Snake {
         }
     }
 
-    inline void Snake::Window::unlockMouse()
+    void Snake::Window::unlockMouse()
     {
         Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*)this->windowStruct;
 

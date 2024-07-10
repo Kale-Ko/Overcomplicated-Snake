@@ -4,9 +4,10 @@ VERSION=v1.0.0
 EXEC=${NAME}-${VERSION}
 
 # Compiler options
-CPP_OPTIONS=-I/usr/include -std=c++20
+CPP_OPTIONS=-I/usr/include/ -std=c++20
+CPP_DEBUG_OPTIONS=-D SNAKE_DEBUG_INPUT
 # Linker options
-LN_OPTIONS=-L/usr/lib -l glfw -l wayland-client -l X11 -l vulkan -l GL
+LN_OPTIONS=-L/usr/lib/ -l glfw -l wayland-client -l X11 -l vulkan -l GL
 
 
 # Build all executables
@@ -72,7 +73,7 @@ build/main.o: src/main.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	g++ -c src/main.cpp -o build/main.o ${CPP_OPTIONS} -O2
 build/main-debug.o: src/main.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/main.cpp -o build/main-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/main.cpp -o build/main-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # game.cpp
 build/game.o: src/game.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
@@ -80,7 +81,7 @@ build/game.o: src/game.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	g++ -c src/game.cpp -o build/game.o ${CPP_OPTIONS} -O2
 build/game-debug.o: src/game.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/game.cpp -o build/game-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/game.cpp -o build/game-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # window.cpp (glfw variant)
 build/window-glfw.o: src/window-glfw.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
@@ -88,7 +89,7 @@ build/window-glfw.o: src/window-glfw.cpp src/window.hpp src/windowevents.hpp src
 	g++ -c src/window-glfw.cpp -o build/window-glfw.o ${CPP_OPTIONS} -O2
 build/window-glfw-debug.o: src/window-glfw.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/window-glfw.cpp -o build/window-glfw-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/window-glfw.cpp -o build/window-glfw-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # window.cpp (wayland variant)
 build/window-wayland.o: src/window-wayland.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
@@ -96,7 +97,7 @@ build/window-wayland.o: src/window-wayland.cpp src/window.hpp src/windowevents.h
 	g++ -c src/window-wayland.cpp -o build/window-wayland.o ${CPP_OPTIONS} -O2
 build/window-wayland-debug.o: src/window-wayland.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/window-wayland.cpp -o build/window-wayland-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/window-wayland.cpp -o build/window-wayland-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # window.cpp (x11 variant)
 build/window-x11.o: src/window-x11.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
@@ -104,7 +105,7 @@ build/window-x11.o: src/window-x11.cpp src/window.hpp src/windowevents.hpp src/k
 	g++ -c src/window-x11.cpp -o build/window-x11.o ${CPP_OPTIONS} -O2
 build/window-x11-debug.o: src/window-x11.cpp src/window.hpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/window-x11.cpp -o build/window-x11-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/window-x11.cpp -o build/window-x11-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # windowevents.cpp
 build/windowevents.o: src/windowevents.cpp src/windowevents.hpp src/keyboard.hpp
@@ -112,7 +113,7 @@ build/windowevents.o: src/windowevents.cpp src/windowevents.hpp src/keyboard.hpp
 	g++ -c src/windowevents.cpp -o build/windowevents.o ${CPP_OPTIONS} -O2
 build/windowevents-debug.o: src/windowevents.cpp src/windowevents.hpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/windowevents.cpp -o build/windowevents-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/windowevents.cpp -o build/windowevents-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # keyboard.cpp (glfw variant)
 build/keyboard-glfw.o: src/keyboard-glfw.cpp src/keyboard-common.cpp src/keyboard.hpp
@@ -120,7 +121,7 @@ build/keyboard-glfw.o: src/keyboard-glfw.cpp src/keyboard-common.cpp src/keyboar
 	g++ -c src/keyboard-glfw.cpp -o build/keyboard-glfw.o ${CPP_OPTIONS} -O2
 build/keyboard-glfw-debug.o: src/keyboard-glfw.cpp src/keyboard-common.cpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/keyboard-glfw.cpp -o build/keyboard-glfw-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/keyboard-glfw.cpp -o build/keyboard-glfw-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # keyboard.cpp (wayland variant)
 build/keyboard-wayland.o: src/keyboard-wayland.cpp src/keyboard-common.cpp src/keyboard.hpp
@@ -128,7 +129,7 @@ build/keyboard-wayland.o: src/keyboard-wayland.cpp src/keyboard-common.cpp src/k
 	g++ -c src/keyboard-wayland.cpp -o build/keyboard-wayland.o ${CPP_OPTIONS} -O2
 build/keyboard-wayland-debug.o: src/keyboard-wayland.cpp src/keyboard-common.cpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/keyboard-wayland.cpp -o build/keyboard-wayland-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/keyboard-wayland.cpp -o build/keyboard-wayland-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # keyboard.cpp (x11 variant)
 build/keyboard-x11.o: src/keyboard-x11.cpp src/keyboard-common.cpp src/keyboard.hpp
@@ -136,7 +137,7 @@ build/keyboard-x11.o: src/keyboard-x11.cpp src/keyboard-common.cpp src/keyboard.
 	g++ -c src/keyboard-x11.cpp -o build/keyboard-x11.o ${CPP_OPTIONS} -O2
 build/keyboard-x11-debug.o: src/keyboard-x11.cpp src/keyboard-common.cpp src/keyboard.hpp
 	@ mkdir -p build/
-	g++ -c src/keyboard-x11.cpp -o build/keyboard-x11-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/keyboard-x11.cpp -o build/keyboard-x11-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # renderer.cpp (gl variant)
 build/renderer-gl.o: src/renderer-gl.cpp src/renderer.hpp
@@ -144,7 +145,7 @@ build/renderer-gl.o: src/renderer-gl.cpp src/renderer.hpp
 	g++ -c src/renderer-gl.cpp -o build/renderer-gl.o ${CPP_OPTIONS} -O2
 build/renderer-gl-debug.o: src/renderer-gl.cpp src/renderer.hpp
 	@ mkdir -p build/
-	g++ -c src/renderer-gl.cpp -o build/renderer-gl-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/renderer-gl.cpp -o build/renderer-gl-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 # renderer.cpp (vulkan variant)
 build/renderer-vulkan.o: src/renderer-vulkan.cpp src/renderer.hpp
@@ -152,7 +153,7 @@ build/renderer-vulkan.o: src/renderer-vulkan.cpp src/renderer.hpp
 	g++ -c src/renderer-vulkan.cpp -o build/renderer-vulkan.o ${CPP_OPTIONS} -O2
 build/renderer-vulkan-debug.o: src/renderer-vulkan.cpp src/renderer.hpp
 	@ mkdir -p build/
-	g++ -c src/renderer-vulkan.cpp -o build/renderer-vulkan-debug.o ${CPP_OPTIONS} -Og -g3
+	g++ -c src/renderer-vulkan.cpp -o build/renderer-vulkan-debug.o ${CPP_OPTIONS} ${CPP_DEBUG_OPTIONS} -Og -g3
 
 
 # clean

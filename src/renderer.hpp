@@ -14,8 +14,10 @@ namespace Snake {
         bool initialized = false;
         bool destroyed = false;
         bool running = false;
+
+        void* rendererStruct;
     public:
-        Renderer(Snake::Window* window, Snake::Game* game);
+        Renderer(Snake::Window* const window, Snake::Game* game);
         ~Renderer();
 
         bool isValid();

@@ -54,7 +54,7 @@ namespace Snake {
         // TODO
     }
 
-    void run(Snake::Renderer* context) {
+    void run(Snake::Renderer* const context) {
         // TODO
 
         while (context->isRunning())

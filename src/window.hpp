@@ -10,8 +10,8 @@ namespace Snake {
     };
 
     struct WindowPosition {
-        int x;
-        int y;
+        signed int x;
+        signed int y;
     };
 
     enum WindowPositionAlign {
@@ -28,8 +28,8 @@ namespace Snake {
 
     class Window {
     protected:
-        unsigned char* title;
-        Snake::WindowIcon* icon;
+        const char* title;
+        const Snake::WindowIcon* icon;
 
         Snake::WindowSize size;
         bool resizable;
@@ -44,32 +44,32 @@ namespace Snake {
         bool destroyed = false;
         bool running = false;
 
-        long windowId;
+        unsigned long windowId;
         void* windowStruct;
 
         Snake::EventManager eventManager = Snake::EventManager();
 
     public:
-        Window(unsigned char* title, Snake::WindowIcon* icon, Snake::WindowSize size, bool resizable, Snake::WindowPosition position, Snake::WindowPositionAlign positionAlign, bool mouseLockEnabled);
+        Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled);
         ~Window();
 
-        unsigned char* getTitle();
-        void setTitle(unsigned char* title);
+        const char* getTitle();
+        void setTitle(const char* const title);
 
-        Snake::WindowIcon* getIcon();
-        void setIcon(Snake::WindowIcon* icon);
+        const Snake::WindowIcon* getIcon();
+        void setIcon(const Snake::WindowIcon* const icon);
 
-        Snake::WindowSize getSize();
-        bool isResizable();
-        void setSize(Snake::WindowSize size);
-        void setRawSize(Snake::WindowSize size);
+        const Snake::WindowSize getSize();
+        const bool isResizable();
+        void setSize(const Snake::WindowSize size);
+        void __setSize(const Snake::WindowSize size);
 
-        Snake::WindowPosition getPosition();
-        Snake::WindowPositionAlign getPositionAlign();
-        void setPosition(Snake::WindowPosition position, Snake::WindowPositionAlign align);
-        void setRawPosition(Snake::WindowPosition position, Snake::WindowPositionAlign align);
+        const Snake::WindowPosition getPosition();
+        const Snake::WindowPositionAlign getPositionAlign();
+        void setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align);
+        void __setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align);
 
-        Snake::EventManager* getEventManager();
+        Snake::EventManager* const getEventManager();
 
         bool isValid();
         void init();
@@ -85,8 +85,8 @@ namespace Snake {
 
         bool isMouseLockEnabled();
         bool isMouseLocked();
-        inline void lockMouse();
-        inline void unlockMouse();
+        void lockMouse();
+        void unlockMouse();
     };
 };
 #endif

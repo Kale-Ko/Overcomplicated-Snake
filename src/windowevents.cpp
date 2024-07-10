@@ -143,12 +143,12 @@ namespace Snake {
         this->mouseScrollListeners.erase(std::remove(this->mouseScrollListeners.begin(), this->mouseScrollListeners.end(), listener), this->mouseScrollListeners.end());
     }
 
-    void Snake::EventManager::emitButtonPressEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitButtonPressEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
@@ -168,12 +168,12 @@ namespace Snake {
         this->buttonPressListeners.erase(std::remove(this->buttonPressListeners.begin(), this->buttonPressListeners.end(), listener), this->buttonPressListeners.end());
     }
 
-    void Snake::EventManager::emitButtonDownEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitButtonDownEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitButtonDownEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitButtonDownEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
@@ -193,12 +193,12 @@ namespace Snake {
         this->buttonDownListeners.erase(std::remove(this->buttonDownListeners.begin(), this->buttonDownListeners.end(), listener), this->buttonDownListeners.end());
     }
 
-    void Snake::EventManager::emitButtonUpEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitButtonUpEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitButtonUpEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitButtonUpEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
@@ -218,12 +218,12 @@ namespace Snake {
         this->buttonUpListeners.erase(std::remove(this->buttonUpListeners.begin(), this->buttonUpListeners.end(), listener), this->buttonUpListeners.end());
     }
 
-    void Snake::EventManager::emitKeyPressEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitKeyPressEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
 
@@ -243,12 +243,12 @@ namespace Snake {
         this->keyPressListeners.erase(std::remove(this->keyPressListeners.begin(), this->keyPressListeners.end(), listener), this->keyPressListeners.end());
     }
 
-    void Snake::EventManager::emitKeyDownEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitKeyDownEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitKeyDownEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitKeyDownEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
 
@@ -268,12 +268,12 @@ namespace Snake {
         this->keyDownListeners.erase(std::remove(this->keyDownListeners.begin(), this->keyDownListeners.end(), listener), this->keyDownListeners.end());
     }
 
-    void Snake::EventManager::emitKeyUpEvent(const int scanCode, const int modifiers)
+    void Snake::EventManager::emitKeyUpEvent(const unsigned int scanCode, const unsigned int modifiers)
     {
         throw "Unimplemented";
     }
 
-    void Snake::EventManager::emitKeyUpEvent(const int scanCode, const int modifiers, const void* const extra)
+    void Snake::EventManager::emitKeyUpEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
     {
         const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
 

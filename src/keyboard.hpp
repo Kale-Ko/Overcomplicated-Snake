@@ -124,8 +124,8 @@ namespace Snake {
         Snake::KeyMod_t modifiers;
     };
 
-    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra);
-    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra);
+    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
+    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra);
 
     std::string getStringFromKeyCode(const Snake::Key_t code, const Snake::KeyMod_t modifiers);
 };

@@ -95,7 +95,7 @@ namespace Snake {
         { GLFW_MOUSE_BUTTON_8, Snake::Button::BUTTON_EXTRA5 }
     };
 
-    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra) {
+    const Snake::KeyStruct getKeyFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra) {
         Snake::Key_t key;
         if (scanCodeToKeyCode.contains(scanCode)) {
             key = scanCodeToKeyCode.at(scanCode);
@@ -105,19 +105,19 @@ namespace Snake {
         }
 
         Snake::KeyMod_t keyMods = 0x00;
-        if ((scanMods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
+        if ((modifiers & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
             keyMods |= Snake::KeyMod::MOD_SHIFT;
         }
-        if ((scanMods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
+        if ((modifiers & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
             keyMods |= Snake::KeyMod::MOD_CONTROL;
         }
-        if ((scanMods & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
+        if ((modifiers & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
             keyMods |= Snake::KeyMod::MOD_ALT;
         }
-        if ((scanMods & GLFW_MOD_SUPER) == GLFW_MOD_SUPER) {
+        if ((modifiers & GLFW_MOD_SUPER) == GLFW_MOD_SUPER) {
             keyMods |= Snake::KeyMod::MOD_META;
         }
-        if ((scanMods & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
+        if ((modifiers & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
             keyMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
 
@@ -126,7 +126,7 @@ namespace Snake {
         return KeyStruct{ .scanCode = scanCode, .code = key, .modifiers = keyMods, .string = string };
     }
 
-    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int scanMods, const void* const extra) {
+    const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra) {
         Snake::Button_t button;
         if (scanCodeToButtonCode.contains(scanCode)) {
             button = scanCodeToButtonCode.at(scanCode);
@@ -136,19 +136,19 @@ namespace Snake {
         }
 
         Snake::KeyMod_t buttonMods = 0x00;
-        if ((scanMods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
+        if ((modifiers & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
             buttonMods |= Snake::KeyMod::MOD_SHIFT;
         }
-        if ((scanMods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
+        if ((modifiers & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
             buttonMods |= Snake::KeyMod::MOD_CONTROL;
         }
-        if ((scanMods & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
+        if ((modifiers & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
             buttonMods |= Snake::KeyMod::MOD_ALT;
         }
-        if ((scanMods & GLFW_MOD_SUPER) == GLFW_MOD_SUPER) {
+        if ((modifiers & GLFW_MOD_SUPER) == GLFW_MOD_SUPER) {
             buttonMods |= Snake::KeyMod::MOD_META;
         }
-        if ((scanMods & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
+        if ((modifiers & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
             buttonMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
 
