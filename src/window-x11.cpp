@@ -139,7 +139,7 @@ namespace Snake {
         return this->positionAlign;
     }
 
-    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -162,7 +162,7 @@ namespace Snake {
         }
     }
 
-    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
+    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -332,7 +332,6 @@ namespace Snake {
         XFlush(windowStruct->display);
 
         XEvent event;
-        int keycode;
         while (context->isRunning())
         {
             XNextEvent(windowStruct->display, &event);
@@ -368,7 +367,7 @@ namespace Snake {
 
                 break;
             case ClientMessage:
-                if (event.xclient.data.l[0] == wmDeleteMessage)
+                if ((Atom)event.xclient.data.l[0] == wmDeleteMessage)
                 {
                     context->getEventManager()->emitWindowCloseEvent();
 
@@ -394,7 +393,7 @@ namespace Snake {
                     context->getEventManager()->emitWindowMoveEvent(event.xconfigure.x, event.xconfigure.y);
                 }
 
-                if (event.xconfigure.width != previousSize.width || event.xconfigure.height != previousSize.height)
+                if ((unsigned int)event.xconfigure.width != previousSize.width || (unsigned int)event.xconfigure.height != previousSize.height)
                 {
                     context->getEventManager()->emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
                 }
@@ -408,7 +407,7 @@ namespace Snake {
 
                 if (context->isMouseLockEnabled() && context->isMouseLocked())
                 {
-                    if (event.xmotion.x == context->getSize().width / 2 && event.xmotion.y == context->getSize().height / 2)
+                    if (event.xmotion.x == (int)context->getSize().width / 2 && event.xmotion.y == (int)context->getSize().height / 2)
                     {
                         continue;
                     }

@@ -66,8 +66,8 @@ namespace Snake {
 
         const Snake::WindowPosition getPosition();
         const Snake::WindowPositionAlign getPositionAlign();
-        void setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align);
-        void __setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align);
+        void setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign);
+        void __setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign);
 
         Snake::EventManager* const getEventManager();
 

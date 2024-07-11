@@ -77,34 +77,24 @@ namespace Snake {
 
             if (shift && !caps) {
                 const char* ogData = vector.at(1);
-                char* data = (char*)malloc(strlen(ogData));
-                strcpy(data, ogData);
-                return std::string(data);
+                return std::string(ogData);
             }
             else if (shift && caps) {
                 const char* ogData = vector.at(3);
-                char* data = (char*)malloc(strlen(ogData));
-                strcpy(data, ogData);
-                return std::string(data);
+                return std::string(ogData);
             }
             else if (!shift && caps) {
                 const char* ogData = vector.at(2);
-                char* data = (char*)malloc(strlen(ogData));
-                strcpy(data, ogData);
-                return std::string(data);
+                return std::string(ogData);
             }
             else {
                 const char* ogData = vector.at(0);
-                char* data = (char*)malloc(strlen(ogData));
-                strcpy(data, ogData);
-                return std::string(data);
+                return std::string(ogData);
             }
         }
         else {
             const char* ogData = keyCodeToStrings.at(Snake::Key::KEY_UNKOWN)[0];
-            char* data = (char*)malloc(strlen(ogData));
-            strcpy(data, ogData);
-            return std::string(data);
+            return std::string(ogData);
         }
     }
 };

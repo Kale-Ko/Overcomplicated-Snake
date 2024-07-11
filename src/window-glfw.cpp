@@ -136,7 +136,7 @@ namespace Snake {
         return this->positionAlign;
     }
 
-    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -163,7 +163,7 @@ namespace Snake {
         }
     }
 
-    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign align) {
+    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
         if (this->destroyed) {
             fprintf(stderr, "Window is destroyed.\n");
             return;
@@ -341,7 +341,7 @@ namespace Snake {
 
         context->__setSize(Snake::WindowSize{ .width = (unsigned int)width, .height = (unsigned int)height });
 
-        if (width != previousSize.width || height != previousSize.height)
+        if ((unsigned int)width != previousSize.width || (unsigned int)height != previousSize.height)
         {
             context->getEventManager()->emitWindowResizeEvent(width, height);
         }
@@ -355,7 +355,7 @@ namespace Snake {
 
         if (context->isMouseLockEnabled() && context->isMouseLocked())
         {
-            if (x == context->getSize().width / 2 && y == context->getSize().height / 2)
+            if (x == (int)context->getSize().width / 2 && y == (int)context->getSize().height / 2)
             {
                 return;
             }
