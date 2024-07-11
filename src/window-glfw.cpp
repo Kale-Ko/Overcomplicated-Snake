@@ -295,16 +295,14 @@ namespace Snake {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         if (focused == GLFW_TRUE) {
-            if (context->isMouseLockEnabled() && !context->isMouseLocked())
-            {
+            if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
                 context->lockMouse();
             }
 
             context->getEventManager()->emitWindowFocusEvent();
         }
         else if (focused == GLFW_FALSE) {
-            if (context->isMouseLocked())
-            {
+            if (context->isMouseLocked()) {
                 context->unlockMouse();
             }
 
@@ -341,8 +339,7 @@ namespace Snake {
 
         context->__setSize(Snake::WindowSize{ .width = (unsigned int)width, .height = (unsigned int)height });
 
-        if ((unsigned int)width != previousSize.width || (unsigned int)height != previousSize.height)
-        {
+        if ((unsigned int)width != previousSize.width || (unsigned int)height != previousSize.height) {
             context->getEventManager()->emitWindowResizeEvent(width, height);
         }
     }
@@ -353,10 +350,8 @@ namespace Snake {
         int x = (int)round(xd);
         int y = (int)round(yd);
 
-        if (context->isMouseLockEnabled() && context->isMouseLocked())
-        {
-            if (x == (int)context->getSize().width / 2 && y == (int)context->getSize().height / 2)
-            {
+        if (context->isMouseLockEnabled() && context->isMouseLocked()) {
+            if (x == (int)context->getSize().width / 2 && y == (int)context->getSize().height / 2) {
                 return;
             }
 
@@ -364,8 +359,7 @@ namespace Snake {
 
             glfwSetCursorPos(window, context->getSize().width / 2, context->getSize().height / 2);
         }
-        else
-        {
+        else {
             context->getEventManager()->emitMouseMoveEvent(x, y);
         }
     }
@@ -383,8 +377,7 @@ namespace Snake {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            if (context->isMouseLockEnabled() && !context->isMouseLocked())
-            {
+            if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
                 context->lockMouse();
             }
 
@@ -399,8 +392,7 @@ namespace Snake {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            if (context->isMouseLocked() && keyCode == GLFW_KEY_ESCAPE)
-            {
+            if (context->isMouseLocked() && keyCode == GLFW_KEY_ESCAPE) {
                 context->unlockMouse();
             }
 
@@ -479,8 +471,7 @@ namespace Snake {
         return this->mouseLocked;
     }
 
-    void Snake::Window::lockMouse()
-    {
+    void Snake::Window::lockMouse() {
         Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
 
         glfwSetInputMode(windowStruct->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -488,8 +479,7 @@ namespace Snake {
         this->mouseLocked = true;
     }
 
-    void Snake::Window::unlockMouse()
-    {
+    void Snake::Window::unlockMouse() {
         Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
 
         glfwSetInputMode(windowStruct->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

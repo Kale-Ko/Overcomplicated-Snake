@@ -16,7 +16,9 @@ namespace Snake {
     }
 
     Snake::Renderer::~Renderer() {
-
+        if (this->initialized && !this->destroyed) {
+            this->destroy();
+        }
     }
 
     void Snake::Renderer::init() {
@@ -57,8 +59,7 @@ namespace Snake {
     void run(Snake::Renderer* const context) {
         // TODO
 
-        while (context->isRunning())
-        {
+        while (context->isRunning()) {
             // TODO
         }
     }

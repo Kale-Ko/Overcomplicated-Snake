@@ -206,8 +206,7 @@ namespace Snake {
         }
 
         windowStruct->screen = XDefaultScreenOfDisplay(windowStruct->display);
-        if (windowStruct->screen == NULL)
-        {
+        if (windowStruct->screen == NULL) {
             fprintf(stderr, "Failed to open X11 screen.\n");
             return;
         }
@@ -332,20 +331,16 @@ namespace Snake {
         XFlush(windowStruct->display);
 
         XEvent event;
-        while (context->isRunning())
-        {
+        while (context->isRunning()) {
             XNextEvent(windowStruct->display, &event);
 
-            switch (event.type)
-            {
+            switch (event.type) {
             case FocusIn:
-                if (event.xfocus.type != FocusIn)
-                {
+                if (event.xfocus.type != FocusIn) {
                     continue;
                 }
 
-                if (context->isMouseLockEnabled() && !context->isMouseLocked())
-                {
+                if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
                     context->lockMouse();
                 }
 
@@ -353,13 +348,11 @@ namespace Snake {
 
                 break;
             case FocusOut:
-                if (event.xfocus.type != FocusOut)
-                {
+                if (event.xfocus.type != FocusOut) {
                     continue;
                 }
 
-                if (context->isMouseLocked())
-                {
+                if (context->isMouseLocked()) {
                     context->unlockMouse();
                 }
 
@@ -367,8 +360,7 @@ namespace Snake {
 
                 break;
             case ClientMessage:
-                if ((Atom)event.xclient.data.l[0] == wmDeleteMessage)
-                {
+                if ((Atom)event.xclient.data.l[0] == wmDeleteMessage) {
                     context->getEventManager()->emitWindowCloseEvent();
 
                     context->stop();
@@ -376,8 +368,7 @@ namespace Snake {
 
                 break;
             case ConfigureNotify:
-                if (event.xconfigure.type != ConfigureNotify)
-                {
+                if (event.xconfigure.type != ConfigureNotify) {
                     continue;
                 }
 
@@ -393,22 +384,18 @@ namespace Snake {
                     context->getEventManager()->emitWindowMoveEvent(event.xconfigure.x, event.xconfigure.y);
                 }
 
-                if ((unsigned int)event.xconfigure.width != previousSize.width || (unsigned int)event.xconfigure.height != previousSize.height)
-                {
+                if ((unsigned int)event.xconfigure.width != previousSize.width || (unsigned int)event.xconfigure.height != previousSize.height) {
                     context->getEventManager()->emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
                 }
 
                 break;
             case MotionNotify:
-                if (event.xmotion.type != MotionNotify)
-                {
+                if (event.xmotion.type != MotionNotify) {
                     continue;
                 }
 
-                if (context->isMouseLockEnabled() && context->isMouseLocked())
-                {
-                    if (event.xmotion.x == (int)context->getSize().width / 2 && event.xmotion.y == (int)context->getSize().height / 2)
-                    {
+                if (context->isMouseLockEnabled() && context->isMouseLocked()) {
+                    if (event.xmotion.x == (int)context->getSize().width / 2 && event.xmotion.y == (int)context->getSize().height / 2) {
                         continue;
                     }
 
@@ -416,15 +403,13 @@ namespace Snake {
 
                     XWarpPointer(windowStruct->display, None, windowStruct->window, 0, 0, 0, 0, context->getSize().width / 2, context->getSize().height / 2);
                 }
-                else
-                {
+                else {
                     context->getEventManager()->emitMouseMoveEvent(event.xmotion.x, event.xmotion.y);
                 }
 
                 break;
             case ButtonPress:
-                if (event.xbutton.type != ButtonPress)
-                {
+                if (event.xbutton.type != ButtonPress) {
                     continue;
                 }
 
@@ -449,8 +434,7 @@ namespace Snake {
                     continue;
                 }
 
-                if (context->isMouseLockEnabled() && !context->isMouseLocked())
-                {
+                if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
                     context->lockMouse();
                 }
 
@@ -458,8 +442,7 @@ namespace Snake {
 
                 break;
             case ButtonRelease:
-                if (event.xbutton.type != ButtonRelease)
-                {
+                if (event.xbutton.type != ButtonRelease) {
                     continue;
                 }
                 if (event.xbutton.button == 0x04 || event.xbutton.button == 0x05 || event.xbutton.button == 0x06 || event.xbutton.button == 0x07) {
@@ -470,13 +453,11 @@ namespace Snake {
 
                 break;
             case KeyPress:
-                if (event.xkey.type != KeyPress)
-                {
+                if (event.xkey.type != KeyPress) {
                     continue;
                 }
 
-                if (context->isMouseLocked() && event.xkey.keycode == 0x9)
-                {
+                if (context->isMouseLocked() && event.xkey.keycode == 0x9) {
                     context->unlockMouse();
                 }
 
@@ -484,8 +465,7 @@ namespace Snake {
 
                 break;
             case KeyRelease:
-                if (event.xkey.type != KeyRelease)
-                {
+                if (event.xkey.type != KeyRelease) {
                     continue;
                 }
 
@@ -549,12 +529,10 @@ namespace Snake {
         return this->mouseLocked;
     }
 
-    void Snake::Window::lockMouse()
-    {
+    void Snake::Window::lockMouse() {
         Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*)this->windowStruct;
 
-        if (XGrabPointer(windowStruct->display, windowStruct->window, true, 0, GrabModeAsync, GrabModeAsync, windowStruct->window, None, CurrentTime) == GrabSuccess)
-        {
+        if (XGrabPointer(windowStruct->display, windowStruct->window, true, 0, GrabModeAsync, GrabModeAsync, windowStruct->window, None, CurrentTime) == GrabSuccess) {
             Pixmap cursorPixmap = XCreatePixmap(windowStruct->display, windowStruct->window, 1, 1, 1);
 
             XColor color;
@@ -571,14 +549,12 @@ namespace Snake {
 
             this->mouseLocked = true;
         }
-        else
-        {
+        else {
             this->unlockMouse();
         }
     }
 
-    void Snake::Window::unlockMouse()
-    {
+    void Snake::Window::unlockMouse() {
         Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*)this->windowStruct;
 
         this->mouseLocked = false;

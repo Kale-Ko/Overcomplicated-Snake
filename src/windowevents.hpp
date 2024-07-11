@@ -6,8 +6,7 @@
 #include <vector>
 
 namespace Snake {
-    class EventManager
-    {
+    class EventManager {
     protected:
         std::vector<void (*)()> windowFocusListeners;
         std::vector<void (*)()> windowUnfocusListeners;
