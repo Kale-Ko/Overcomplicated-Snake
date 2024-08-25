@@ -30,36 +30,36 @@ buildDebug: out/${EXEC}-glfw-vulkan-debug out/${EXEC}-glfw-gl-debug out/${EXEC}-
 
 
 # Main executable (glfw & vulkan variant)
-out/${EXEC}-glfw-vulkan: build/main.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-vulkan.o
+out/${EXEC}-glfw-vulkan: build/main.o build/game.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-vulkan.o
 	@ mkdir -p out/
-	${COMPILER} build/main.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-vulkan.o -o out/${EXEC}-glfw-vulkan ${LN_RELEASE_OPTIONS}
-out/${EXEC}-glfw-vulkan-debug: build/main-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-vulkan-debug.o
+	${COMPILER} build/main.o build/game.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-vulkan.o -o out/${EXEC}-glfw-vulkan ${LN_RELEASE_OPTIONS}
+out/${EXEC}-glfw-vulkan-debug: build/main-debug.o build/game-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-vulkan-debug.o
 	@ mkdir -p out/
-	${COMPILER} build/main-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-glfw-vulkan-debug ${LN_DEBUG_OPTIONS}
+	${COMPILER} build/main-debug.o build/game-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-glfw-vulkan-debug ${LN_DEBUG_OPTIONS}
 
 # Main executable (wayland & vulkan variant)
-out/${EXEC}-wayland-vulkan: build/main.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-vulkan.o
+out/${EXEC}-wayland-vulkan: build/main.o build/game.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-vulkan.o
 	@ mkdir -p out/
-	${COMPILER} build/main.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-vulkan.o -o out/${EXEC}-wayland-vulkan ${LN_RELEASE_OPTIONS}
-out/${EXEC}-wayland-vulkan-debug: build/main-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-vulkan-debug.o
+	${COMPILER} build/main.o build/game.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-vulkan.o -o out/${EXEC}-wayland-vulkan ${LN_RELEASE_OPTIONS}
+out/${EXEC}-wayland-vulkan-debug: build/main-debug.o build/game-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-vulkan-debug.o
 	@ mkdir -p out/
-	${COMPILER} build/main-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-wayland-vulkan-debug ${LN_DEBUG_OPTIONS}
+	${COMPILER} build/main-debug.o build/game-debug.o build/window-wayland-debug.o build/windowevents-debug.o build/keyboard-wayland-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-wayland-vulkan-debug ${LN_DEBUG_OPTIONS}
 
 # Main executable (x11 & vulkan variant)
-out/${EXEC}-x11-vulkan: build/main.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-vulkan.o
+out/${EXEC}-x11-vulkan: build/main.o build/game.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-vulkan.o
 	@ mkdir -p out/
-	${COMPILER} build/main.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-vulkan.o -o out/${EXEC}-x11-vulkan ${LN_RELEASE_OPTIONS}
-out/${EXEC}-x11-vulkan-debug: build/main-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-vulkan-debug.o
+	${COMPILER} build/main.o build/game.o build/window-x11.o build/windowevents.o build/keyboard-x11.o build/renderer-vulkan.o -o out/${EXEC}-x11-vulkan ${LN_RELEASE_OPTIONS}
+out/${EXEC}-x11-vulkan-debug: build/main-debug.o build/game-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-vulkan-debug.o
 	@ mkdir -p out/
-	${COMPILER} build/main-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-x11-vulkan-debug ${LN_DEBUG_OPTIONS}
+	${COMPILER} build/main-debug.o build/game-debug.o build/window-x11-debug.o build/windowevents-debug.o build/keyboard-x11-debug.o build/renderer-vulkan-debug.o -o out/${EXEC}-x11-vulkan-debug ${LN_DEBUG_OPTIONS}
 
 # Main executable (glfw & gl variant)
-out/${EXEC}-glfw-gl: build/main.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-gl.o
+out/${EXEC}-glfw-gl: build/main.o build/game.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-gl.o
 	@ mkdir -p out/
-	${COMPILER} build/main.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-gl.o -o out/${EXEC}-glfw-gl ${LN_RELEASE_OPTIONS}
-out/${EXEC}-glfw-gl-debug: build/main-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-gl-debug.o
+	${COMPILER} build/main.o build/game.o build/window-glfw.o build/windowevents.o build/keyboard-glfw.o build/renderer-gl.o -o out/${EXEC}-glfw-gl ${LN_RELEASE_OPTIONS}
+out/${EXEC}-glfw-gl-debug: build/main-debug.o build/game-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-gl-debug.o
 	@ mkdir -p out/
-	${COMPILER} build/main-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-gl-debug.o -o out/${EXEC}-glfw-gl-debug ${LN_DEBUG_OPTIONS}
+	${COMPILER} build/main-debug.o build/game-debug.o build/window-glfw-debug.o build/windowevents-debug.o build/keyboard-glfw-debug.o build/renderer-gl-debug.o -o out/${EXEC}-glfw-gl-debug ${LN_DEBUG_OPTIONS}
 
 # Main executable (wayland & gl variant)
 out/${EXEC}-wayland-gl: build/main.o build/game.o build/window-wayland.o build/windowevents.o build/keyboard-wayland.o build/renderer-gl.o

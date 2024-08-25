@@ -3,10 +3,10 @@
 
 #include "windowevents.hpp"
 
-#include <vector>
-
 namespace Snake
 {
+typedef unsigned char GridCell;
+
     class Game
     {
     protected:
@@ -19,7 +19,7 @@ namespace Snake
         bool destroyed = false;
         bool running = false;
 
-        unsigned char* grid;
+        GridCell* grid;
 
     public:
         Game(unsigned int width, unsigned int height, Snake::EventManager* const eventManager);

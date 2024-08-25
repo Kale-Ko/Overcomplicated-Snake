@@ -26,6 +26,11 @@ namespace Snake
         }
     }
 
+    bool Snake::Renderer::isValid()
+    {
+        return this->initialized && !this->destroyed;
+    }
+
     void Snake::Renderer::init()
     {
         if (this->destroyed)
