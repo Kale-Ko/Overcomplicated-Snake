@@ -78,8 +78,8 @@ namespace Snake
         Snake::EventManager* const getEventManager();
 
         bool isValid();
-        void init();
-        void destroy();
+        int init();
+        int destroy();
 
         void show();
         void hide();

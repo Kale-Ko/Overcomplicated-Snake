@@ -218,17 +218,17 @@ namespace Snake
         return this->initialized && !this->destroyed;
     }
 
-    void Snake::Window::init()
+    int Snake::Window::init()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Window is destroyed.\n");
-            return;
+            return -2;
         }
         if (this->initialized)
         {
             fprintf(stderr, "Window is already initialized.\n");
-            return;
+            return -2;
         }
 
         if (glfwRefCount == 0)
@@ -238,7 +238,7 @@ namespace Snake
             if (glfwInit() != GLFW_TRUE)
             {
                 fprintf(stderr, "Failed to initialize GLFW.\n");
-                return;
+                return -1;
             }
         }
 
@@ -254,7 +254,7 @@ namespace Snake
         if (windowStruct->window == 0)
         {
             fprintf(stderr, "Failed to create GLFW window.\n");
-            return;
+            return -1;
         }
 
         glfwWindowMap.insert(std::make_pair(windowStruct->window, this));
@@ -293,19 +293,21 @@ namespace Snake
         }
 
         // glfwMakeContextCurrent(windowStruct->window);
+
+        return 1;
     }
 
-    void Snake::Window::destroy()
+    int Snake::Window::destroy()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Window is already destroyed.\n");
-            return;
+            return -2;
         }
         if (!this->initialized)
         {
             fprintf(stderr, "Window is not initialized.\n");
-            return;
+            return -2;
         }
 
         if (this->running)
@@ -329,6 +331,8 @@ namespace Snake
         }
 
         delete(Snake::GLFWWindowStruct*) this->windowStruct;
+
+        return 1;
     }
 
     void Snake::Window::show()

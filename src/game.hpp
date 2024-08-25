@@ -5,13 +5,23 @@
 
 namespace Snake
 {
-typedef unsigned char GridCell;
+    enum GridCell
+    {
+        AIR,
+        SNAKE_HEAD,
+        SNAKE_TAIL,
+        APPLE
+    };
+
+    // typedef unsigned char GridCell;
 
     class Game
     {
     protected:
         unsigned int width;
         unsigned int height;
+
+        unsigned int initialSize;
 
         Snake::EventManager* eventManager;
 
@@ -22,16 +32,24 @@ typedef unsigned char GridCell;
         GridCell* grid;
 
     public:
-        Game(unsigned int width, unsigned int height, Snake::EventManager* const eventManager);
+        Game(unsigned int width, unsigned int height, unsigned int initialSize, Snake::EventManager* const eventManager);
         ~Game();
 
+        unsigned int getWidth();
+        unsigned int getHeight();
+
         bool isValid();
-        void init();
-        void destroy();
+        int init();
+        int destroy();
 
         bool isRunning();
         void start();
         void stop();
+
+    protected:
+        void generateGrid();
+
+        void spawnApple();
     };
 };
 #endif

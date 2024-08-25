@@ -31,35 +31,37 @@ namespace Snake
         return this->initialized && !this->destroyed;
     }
 
-    void Snake::Renderer::init()
+    int Snake::Renderer::init()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Renderer is destroyed.\n");
-            return;
+            return -2;
         }
         if (this->initialized)
         {
             fprintf(stderr, "Renderer is already initialized.\n");
-            return;
+            return -2;
         }
 
         this->initialized = true;
 
         // TODO
+
+        return 1;
     }
 
-    void Snake::Renderer::destroy()
+    int Snake::Renderer::destroy()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Renderer is already destroyed.\n");
-            return;
+            return -2;
         }
         if (!this->initialized)
         {
             fprintf(stderr, "Renderer is not initialized.\n");
-            return;
+            return -2;
         }
 
         if (this->running)
@@ -71,6 +73,8 @@ namespace Snake
         this->initialized = false;
 
         // TODO
+
+        return 1;
     }
 
     void run(Snake::Renderer* const context)

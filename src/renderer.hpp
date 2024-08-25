@@ -24,8 +24,8 @@ namespace Snake
         ~Renderer();
 
         bool isValid();
-        void init();
-        void destroy();
+        int init();
+        int destroy();
 
         bool isRunning();
         void start();

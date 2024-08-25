@@ -212,23 +212,23 @@ namespace Snake
         return this->initialized && !this->destroyed;
     }
 
-    void Snake::Window::init()
+    int Snake::Window::init()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Window is destroyed.\n");
-            return;
+            return -2;
         }
         if (this->initialized)
         {
             fprintf(stderr, "Window is already initialized.\n");
-            return;
+            return -2;
         }
 
         if (XInitThreads() == 0)
         {
             fprintf(stderr, "Failed to initialize X11.\n");
-            return;
+            return -1;
         }
 
         this->windowStruct = new Snake::X11WindowStruct();
@@ -239,14 +239,14 @@ namespace Snake
         if (windowStruct->display == NULL)
         {
             fprintf(stderr, "Failed open X11 display.\n");
-            return;
+            return -1;
         }
 
         windowStruct->screen = XDefaultScreenOfDisplay(windowStruct->display);
         if (windowStruct->screen == NULL)
         {
             fprintf(stderr, "Failed to open X11 screen.\n");
-            return;
+            return -1;
         }
 
         switch (this->positionAlign)
@@ -262,7 +262,7 @@ namespace Snake
         if (windowStruct->window == 0)
         {
             fprintf(stderr, "Failed to create X11 window.\n");
-            return;
+            return -1;
         }
 
         XSetWindowAttributes windowAttributes;
@@ -317,19 +317,21 @@ namespace Snake
                 XMoveWindow(windowStruct->display, windowStruct->window, this->position.x + ((windowStruct->screen->width / 2) - (this->size.width / 2)), this->position.y + ((windowStruct->screen->height / 2) - (this->size.height / 2)));
                 break;
         }
+
+        return 1;
     }
 
-    void Snake::Window::destroy()
+    int Snake::Window::destroy()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Window is already destroyed.\n");
-            return;
+            return -2;
         }
         if (!this->initialized)
         {
             fprintf(stderr, "Window is not initialized.\n");
-            return;
+            return -2;
         }
 
         if (this->running)
@@ -349,6 +351,8 @@ namespace Snake
         XFreeThreads();
 
         delete(Snake::X11WindowStruct*) this->windowStruct;
+
+        return 1;
     }
 
     void Snake::Window::show()

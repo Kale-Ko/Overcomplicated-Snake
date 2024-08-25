@@ -41,7 +41,10 @@ void keyUpListener(Snake::KeyStruct key)
 int main(int argc, char* argv[])
 {
     Snake::Window window((char*) "Overcomplicated Snake", NULL, Snake::WindowSize{ .width = 640, .height = 360 }, false, Snake::WindowPosition{ .x = 0, .y = 0 }, Snake::WindowPositionAlign::CENTER, false);
-    window.init();
+    if (window.init() < 0)
+    {
+        exit(0);
+    }
 
 #ifdef SNAKE_DEBUG_INPUT
     window.getEventManager()->registerMouseMoveListener(mouseMoveListener);
@@ -53,11 +56,17 @@ int main(int argc, char* argv[])
     window.getEventManager()->registerKeyUpListener(keyUpListener);
 #endif
 
-    Snake::Game game(40, 40, window.getEventManager());
-    game.init();
+    Snake::Game game(20, 20, 4, window.getEventManager());
+    if (game.init() < 0)
+    {
+        exit(0);
+    }
 
     Snake::Renderer renderer(&window, &game);
-    renderer.init();
+    if (renderer.init() < 0)
+    {
+        exit(0);
+    }
 
     window.start();
     renderer.start();

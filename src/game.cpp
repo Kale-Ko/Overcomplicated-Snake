@@ -7,10 +7,12 @@
 
 namespace Snake
 {
-    Snake::Game::Game(unsigned int width, unsigned int height, Snake::EventManager* const eventManager)
+    Snake::Game::Game(unsigned int width, unsigned int height, unsigned int initialSize, Snake::EventManager* const eventManager)
     {
         this->width = width;
         this->height = height;
+
+        this->initialSize = initialSize;
 
         this->eventManager = eventManager;
     }
@@ -21,6 +23,16 @@ namespace Snake
         {
             this->destroy();
         }
+    }
+
+    unsigned int Snake::Game::getWidth()
+    {
+        return this->width;
+    }
+
+    unsigned int Snake::Game::getHeight()
+    {
+        return this->height;
     }
 
     bool Snake::Game::isValid()
@@ -41,10 +53,10 @@ namespace Snake
             return;
         }
 
-        // TODO Init
-
         this->grid = new GridCell[this->width * this->height];
         this->initialized = true;
+
+        this->generateGrid();
     }
 
     void Snake::Game::destroy()
@@ -68,7 +80,7 @@ namespace Snake
         this->destroyed = true;
         this->initialized = false;
 
-        // TODO Destroy
+        delete this->grid;
     }
 
     bool Snake::Game::isRunning()
