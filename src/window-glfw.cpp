@@ -231,7 +231,7 @@ namespace Snake
             return -2;
         }
 
-        if (glfwRefCount == 0)
+        if (*glfwRefCount == 0)
         {
             (*glfwRefCount)++;
 
@@ -325,7 +325,7 @@ namespace Snake
         glfwDestroyWindow(windowStruct->window);
 
         (*glfwRefCount)--;
-        if (glfwRefCount == 0)
+        if (*glfwRefCount == 0)
         {
             glfwTerminate();
         }
@@ -473,7 +473,7 @@ namespace Snake
     {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        if (action == GLFW_PRESS)
         {
             if (context->isMouseLocked() && keyCode == GLFW_KEY_ESCAPE)
             {
@@ -484,6 +484,11 @@ namespace Snake
         } else if (action == GLFW_RELEASE)
         {
             context->getEventManager()->emitKeyUpEvent(keyCode, modifiers, NULL);
+        } else if (action == GLFW_REPEAT)
+        {
+            context->getEventManager()->emitKeyUpEvent(keyCode, modifiers, NULL);
+
+            context->getEventManager()->emitKeyDownEvent(keyCode, modifiers, NULL);
         }
     }
 
