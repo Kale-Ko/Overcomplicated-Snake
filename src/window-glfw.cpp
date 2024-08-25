@@ -8,21 +8,28 @@
 
 #include <thread>
 #include <map>
+#include <algorithm>
 
 #include <GLFW/glfw3.h>
 
-namespace Snake {
-    struct GLFWWindowStruct {
+namespace Snake
+{
+    struct GLFWWindowStruct
+    {
         GLFWwindow* window;
     };
 
-    static std::map<GLFWwindow* const, Snake::Window* const> windowMap;
+    static int* glfwRefCount = new int{ 0 };
 
-    static Snake::Window* const glfwGetContextFromWindow(GLFWwindow* const window) {
-        return windowMap.at(window);
+    static std::map<GLFWwindow* const, Snake::Window* const> glfwWindowMap;
+
+    static Snake::Window* const glfwGetContextFromWindow(GLFWwindow* const window)
+    {
+        return glfwWindowMap.at(window);
     }
 
-    Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled) {
+    Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled)
+    {
         this->title = title;
         this->icon = icon;
 
@@ -35,92 +42,112 @@ namespace Snake {
         this->mouseLockEnabled = mouseLockEnabled;
     }
 
-    Snake::Window::~Window() {
-        if (this->initialized && !this->destroyed) {
+    Snake::Window::~Window()
+    {
+        if (this->initialized && !this->destroyed)
+        {
             this->destroy();
         }
     }
 
-    const char* Snake::Window::getTitle() {
+    const char* Snake::Window::getTitle()
+    {
         return this->title;
     }
 
-    void Snake::Window::setTitle(const char* const title) {
-        if (this->destroyed) {
+    void Snake::Window::setTitle(const char* const title)
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
 
         this->title = title;
 
-        if (this->initialized) {
-            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+        if (this->initialized)
+        {
+            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
-            glfwSetWindowTitle(windowStruct->window, (char*)this->title);
+            glfwSetWindowTitle(windowStruct->window, (char*) this->title);
         }
     }
 
-    const Snake::WindowIcon* Snake::Window::getIcon() {
+    const Snake::WindowIcon* Snake::Window::getIcon()
+    {
         return this->icon;
     }
 
-    void Snake::Window::setIcon(const Snake::WindowIcon* const icon) {
-        if (this->destroyed) {
+    void Snake::Window::setIcon(const Snake::WindowIcon* const icon)
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
 
         this->icon = icon;
 
-        if (this->initialized) {
-            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+        if (this->initialized)
+        {
+            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
-            if (icon != NULL) {
+            if (icon != NULL)
+            {
                 GLFWimage glfwIcon;
                 glfwIcon.width = this->icon->width;
                 glfwIcon.height = this->icon->height;
                 glfwIcon.pixels = this->icon->data;
                 glfwSetWindowIcon(windowStruct->window, 1, &glfwIcon);
-            }
-            else {
+            } else
+            {
                 glfwSetWindowIcon(windowStruct->window, 0, NULL);
             }
         }
     }
 
-    const Snake::WindowSize Snake::Window::getSize() {
+    const Snake::WindowSize Snake::Window::getSize()
+    {
         return this->size;
     }
 
-    const bool Snake::Window::isResizable() {
+    const bool Snake::Window::isResizable()
+    {
         return this->resizable;
     }
 
-    void Snake::Window::setSize(const Snake::WindowSize size) {
-        if (this->destroyed) {
+    void Snake::Window::setSize(const Snake::WindowSize size)
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
-        if (!this->resizable) {
+        if (!this->resizable)
+        {
             fprintf(stderr, "Window is not resizable.\n");
             return;
         }
 
         this->size = size;
 
-        if (this->initialized) {
-            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+        if (this->initialized)
+        {
+            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
             glfwSetWindowSize(windowStruct->window, this->size.width, this->size.height);
         }
     }
 
-    void Snake::Window::__setSize(const Snake::WindowSize size) {
-        if (this->destroyed) {
+    void Snake::Window::__setSize(const Snake::WindowSize size)
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
-        if (!this->resizable) {
+        if (!this->resizable)
+        {
             fprintf(stderr, "Window is not resizable.\n");
             return;
         }
@@ -128,16 +155,20 @@ namespace Snake {
         this->size = size;
     }
 
-    const Snake::WindowPosition Snake::Window::getPosition() {
+    const Snake::WindowPosition Snake::Window::getPosition()
+    {
         return this->position;
     }
 
-    const Snake::WindowPositionAlign Snake::Window::getPositionAlign() {
+    const Snake::WindowPositionAlign Snake::Window::getPositionAlign()
+    {
         return this->positionAlign;
     }
 
-    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
-        if (this->destroyed) {
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign)
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
@@ -145,10 +176,110 @@ namespace Snake {
         this->position = position;
         this->positionAlign = positionAlign;
 
-        if (this->initialized) {
-            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+        if (this->initialized)
+        {
+            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
-            switch (this->positionAlign) {
+            switch (this->positionAlign)
+            {
+                case TOP_LEFT:
+                    glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
+                    break;
+                case CENTER:
+                    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+                    int x, y, width, height;
+                    glfwGetMonitorWorkarea(monitor, &x, &y, &width, &height);
+
+                    glfwSetWindowPos(windowStruct->window, this->position.x + x + ((width / 2) - (this->size.width / 2)), this->position.y + y + ((height / 2) - (this->size.height / 2)));
+                    break;
+            }
+        }
+    }
+
+    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign)
+    {
+        if (this->destroyed)
+        {
+            fprintf(stderr, "Window is destroyed.\n");
+            return;
+        }
+
+        this->position = position;
+        this->positionAlign = positionAlign;
+    }
+
+    Snake::EventManager* const Snake::Window::getEventManager()
+    {
+        return &this->eventManager;
+    }
+
+    bool Snake::Window::isValid()
+    {
+        return this->initialized && !this->destroyed;
+    }
+
+    void Snake::Window::init()
+    {
+        if (this->destroyed)
+        {
+            fprintf(stderr, "Window is destroyed.\n");
+            return;
+        }
+        if (this->initialized)
+        {
+            fprintf(stderr, "Window is already initialized.\n");
+            return;
+        }
+
+        if (glfwRefCount == 0)
+        {
+            (*glfwRefCount)++;
+
+            if (glfwInit() != GLFW_TRUE)
+            {
+                fprintf(stderr, "Failed to initialize GLFW.\n");
+                return;
+            }
+        }
+
+        this->windowStruct = new Snake::GLFWWindowStruct();
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
+        this->initialized = true;
+
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_RESIZABLE, this->resizable ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+
+        windowStruct->window = glfwCreateWindow(this->size.width, this->size.height, (char*) this->title, NULL, NULL);
+        if (windowStruct->window == 0)
+        {
+            fprintf(stderr, "Failed to create GLFW window.\n");
+            return;
+        }
+
+        glfwWindowMap.insert(std::make_pair(windowStruct->window, this));
+
+        if (icon != NULL)
+        {
+            GLFWimage glfwIcon;
+            glfwIcon.width = this->icon->width;
+            glfwIcon.height = this->icon->height;
+            glfwIcon.pixels = this->icon->data;
+            glfwSetWindowIcon(windowStruct->window, 1, &glfwIcon);
+        } else
+        {
+            glfwSetWindowIcon(windowStruct->window, 0, NULL);
+        }
+
+        glfwSetWindowSize(windowStruct->window, this->size.width, this->size.height);
+
+        if (!this->resizable)
+        {
+            glfwSetWindowSizeLimits(windowStruct->window, this->size.width, this->size.height, this->size.width, this->size.height);
+        }
+
+        switch (this->positionAlign)
+        {
             case TOP_LEFT:
                 glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
                 break;
@@ -159,150 +290,84 @@ namespace Snake {
 
                 glfwSetWindowPos(windowStruct->window, this->position.x + x + ((width / 2) - (this->size.width / 2)), this->position.y + y + ((height / 2) - (this->size.height / 2)));
                 break;
-            }
-        }
-    }
-
-    void Snake::Window::__setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign) {
-        if (this->destroyed) {
-            fprintf(stderr, "Window is destroyed.\n");
-            return;
-        }
-
-        this->position = position;
-        this->positionAlign = positionAlign;
-    }
-
-    Snake::EventManager* const Snake::Window::getEventManager() {
-        return &this->eventManager;
-    }
-
-    bool Snake::Window::isValid() {
-        return this->initialized && !this->destroyed;
-    }
-
-    void Snake::Window::init() {
-        if (this->destroyed) {
-            fprintf(stderr, "Window is destroyed.\n");
-            return;
-        }
-        if (this->initialized) {
-            fprintf(stderr, "Window is already initialized.\n");
-            return;
-        }
-
-        if (glfwInit() != GLFW_TRUE) {
-            fprintf(stderr, "Failed to initialize GLFW.\n");
-            return;
-        }
-
-        this->windowStruct = new Snake::GLFWWindowStruct();
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
-        this->initialized = true;
-
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_RESIZABLE, this->resizable ? GLFW_TRUE : GLFW_FALSE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
-
-        windowStruct->window = glfwCreateWindow(this->size.width, this->size.height, (char*)this->title, NULL, NULL);
-        if (windowStruct->window == 0) {
-            fprintf(stderr, "Failed to create GLFW window.\n");
-            return;
-        }
-
-        windowMap.insert(std::make_pair(windowStruct->window, this));
-
-        if (icon != NULL) {
-            GLFWimage glfwIcon;
-            glfwIcon.width = this->icon->width;
-            glfwIcon.height = this->icon->height;
-            glfwIcon.pixels = this->icon->data;
-            glfwSetWindowIcon(windowStruct->window, 1, &glfwIcon);
-        }
-        else {
-            glfwSetWindowIcon(windowStruct->window, 0, NULL);
-        }
-
-        glfwSetWindowSize(windowStruct->window, this->size.width, this->size.height);
-
-        if (!this->resizable) {
-            glfwSetWindowSizeLimits(windowStruct->window, this->size.width, this->size.height, this->size.width, this->size.height);
-        }
-
-        switch (this->positionAlign) {
-        case TOP_LEFT:
-            glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
-            break;
-        case CENTER:
-            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-            int x, y, width, height;
-            glfwGetMonitorWorkarea(monitor, &x, &y, &width, &height);
-
-            glfwSetWindowPos(windowStruct->window, this->position.x + x + ((width / 2) - (this->size.width / 2)), this->position.y + y + ((height / 2) - (this->size.height / 2)));
-            break;
         }
 
         // glfwMakeContextCurrent(windowStruct->window);
     }
 
-    void Snake::Window::destroy() {
-        if (this->destroyed) {
+    void Snake::Window::destroy()
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is already destroyed.\n");
             return;
         }
-        if (!this->initialized) {
+        if (!this->initialized)
+        {
             fprintf(stderr, "Window is not initialized.\n");
             return;
         }
 
-        if (this->running) {
+        if (this->running)
+        {
             this->stop();
         }
 
         this->destroyed = true;
         this->initialized = false;
 
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
-        windowMap.erase(windowStruct->window);
+        glfwWindowMap.erase(windowStruct->window);
 
         glfwDestroyWindow(windowStruct->window);
 
-        glfwTerminate();
+        (*glfwRefCount)--;
+        if (glfwRefCount == 0)
+        {
+            glfwTerminate();
+        }
 
-        delete (Snake::GLFWWindowStruct*)this->windowStruct;
+        delete(Snake::GLFWWindowStruct*) this->windowStruct;
     }
 
-    void Snake::Window::show() {
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+    void Snake::Window::show()
+    {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
         glfwShowWindow(windowStruct->window);
     }
 
-    void Snake::Window::hide() {
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+    void Snake::Window::hide()
+    {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
         glfwHideWindow(windowStruct->window);
     }
 
-    void Snake::Window::focus() {
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+    void Snake::Window::focus()
+    {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
         glfwFocusWindow(windowStruct->window);
     }
 
-    void glfwWindowFocusCallback(GLFWwindow* const window, int focused) {
+    void glfwWindowFocusCallback(GLFWwindow* const window, int focused)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        if (focused == GLFW_TRUE) {
-            if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
+        if (focused == GLFW_TRUE)
+        {
+            if (context->isMouseLockEnabled() && !context->isMouseLocked())
+            {
                 context->lockMouse();
             }
 
             context->getEventManager()->emitWindowFocusEvent();
-        }
-        else if (focused == GLFW_FALSE) {
-            if (context->isMouseLocked()) {
+        } else if (focused == GLFW_FALSE)
+        {
+            if (context->isMouseLocked())
+            {
                 context->unlockMouse();
             }
 
@@ -310,7 +375,8 @@ namespace Snake {
         }
     }
 
-    void glfwWindowCloseCallback(GLFWwindow* const window) {
+    void glfwWindowCloseCallback(GLFWwindow* const window)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         context->getEventManager()->emitWindowCloseEvent();
@@ -318,7 +384,8 @@ namespace Snake {
         context->stop();
     }
 
-    void glfwWindowPositionCallback(GLFWwindow* const window, int x, int y) {
+    void glfwWindowPositionCallback(GLFWwindow* const window, int x, int y)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         Snake::WindowPosition previousPosition;
@@ -326,84 +393,98 @@ namespace Snake {
 
         context->__setPosition(Snake::WindowPosition{ .x = x, .y = y }, Snake::WindowPositionAlign::TOP_LEFT); // TODO Don't change position align
 
-        if (x != previousPosition.x || y != previousPosition.y) {
+        if (x != previousPosition.x || y != previousPosition.y)
+        {
             context->getEventManager()->emitWindowMoveEvent(x, y);
         }
     }
 
-    void glfwWindowSizeCallback(GLFWwindow* const window, int width, int height) {
+    void glfwWindowSizeCallback(GLFWwindow* const window, int width, int height)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
         Snake::WindowSize previousSize;
         previousSize = context->getSize();
 
-        context->__setSize(Snake::WindowSize{ .width = (unsigned int)width, .height = (unsigned int)height });
+        context->__setSize(Snake::WindowSize{ .width = (unsigned int) width, .height = (unsigned int) height });
 
-        if ((unsigned int)width != previousSize.width || (unsigned int)height != previousSize.height) {
+        if ((unsigned int) width != previousSize.width || (unsigned int) height != previousSize.height)
+        {
             context->getEventManager()->emitWindowResizeEvent(width, height);
         }
     }
 
-    void glfwMouseMoveCallback(GLFWwindow* const window, double xd, double yd) {
+    void glfwMouseMoveCallback(GLFWwindow* const window, double xd, double yd)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        int x = (int)round(xd);
-        int y = (int)round(yd);
+        int x = (int) round(xd);
+        int y = (int) round(yd);
 
-        if (context->isMouseLockEnabled() && context->isMouseLocked()) {
-            if (x == (int)context->getSize().width / 2 && y == (int)context->getSize().height / 2) {
+        if (context->isMouseLockEnabled() && context->isMouseLocked())
+        {
+            if (x == (int) context->getSize().width / 2 && y == (int) context->getSize().height / 2)
+            {
                 return;
             }
 
             context->getEventManager()->emitMouseMoveEvent(x - (context->getSize().width / 2), y - (context->getSize().height / 2));
 
             glfwSetCursorPos(window, context->getSize().width / 2, context->getSize().height / 2);
-        }
-        else {
+        } else
+        {
             context->getEventManager()->emitMouseMoveEvent(x, y);
         }
     }
 
-    void glfwMouseScrollCallback(GLFWwindow* const window, double xd, double yd) {
+    void glfwMouseScrollCallback(GLFWwindow* const window, double xd, double yd)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        int x = (int)round(xd);
-        int y = (int)round(yd);
+        int x = (int) round(xd);
+        int y = (int) round(yd);
 
         context->getEventManager()->emitMouseScrollEvent(x, y);
     }
 
-    void glfwButtonCallback(GLFWwindow* const window, int button, int action, int modifiers) {
+    void glfwButtonCallback(GLFWwindow* const window, int button, int action, int modifiers)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            if (context->isMouseLockEnabled() && !context->isMouseLocked()) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        {
+            if (context->isMouseLockEnabled() && !context->isMouseLocked())
+            {
                 context->lockMouse();
             }
 
             context->getEventManager()->emitButtonDownEvent(button, modifiers, NULL);
-        }
-        else if (action == GLFW_RELEASE) {
+        } else if (action == GLFW_RELEASE)
+        {
             context->getEventManager()->emitButtonUpEvent(button, modifiers, NULL);
         }
     }
 
-    void glfwKeyCallback(GLFWwindow* const window, int keyCode, int scanCode, int action, int modifiers) {
+    void glfwKeyCallback(GLFWwindow* const window, int keyCode, int scanCode, int action, int modifiers)
+    {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            if (context->isMouseLocked() && keyCode == GLFW_KEY_ESCAPE) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        {
+            if (context->isMouseLocked() && keyCode == GLFW_KEY_ESCAPE)
+            {
                 context->unlockMouse();
             }
 
             context->getEventManager()->emitKeyDownEvent(keyCode, modifiers, NULL);
-        }
-        else if (action == GLFW_RELEASE) {
+        } else if (action == GLFW_RELEASE)
+        {
             context->getEventManager()->emitKeyUpEvent(keyCode, modifiers, NULL);
         }
     }
 
-    void run(Snake::Window* context, Snake::GLFWWindowStruct* windowStruct) {
+    void run(Snake::Window* context, Snake::GLFWWindowStruct* windowStruct)
+    {
         // glfwMakeContextCurrent(windowStruct->window);
 
         glfwSetWindowFocusCallback(windowStruct->window, &glfwWindowFocusCallback);
@@ -415,47 +496,57 @@ namespace Snake {
         glfwSetMouseButtonCallback(windowStruct->window, &glfwButtonCallback);
         glfwSetKeyCallback(windowStruct->window, &glfwKeyCallback);
 
-        while (context->isRunning()) {
+        while (context->isRunning())
+        {
             glfwPollEvents();
         }
     }
 
-    bool Snake::Window::isRunning() {
+    bool Snake::Window::isRunning()
+    {
         return this->running;
     }
 
-    void Snake::Window::start() {
-        if (this->destroyed) {
+    void Snake::Window::start()
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
-        if (!this->initialized) {
+        if (!this->initialized)
+        {
             fprintf(stderr, "Window is not initialized.\n");
             return;
         }
 
-        if (this->running) {
+        if (this->running)
+        {
             fprintf(stderr, "Window is already running.\n");
             return;
         }
 
         this->running = true;
 
-        std::thread runThread(&run, this, (Snake::GLFWWindowStruct*)this->windowStruct);
+        std::thread runThread(&run, this, (Snake::GLFWWindowStruct*) this->windowStruct);
         runThread.detach();
     }
 
-    void Snake::Window::stop() {
-        if (this->destroyed) {
+    void Snake::Window::stop()
+    {
+        if (this->destroyed)
+        {
             fprintf(stderr, "Window is destroyed.\n");
             return;
         }
-        if (!this->initialized) {
+        if (!this->initialized)
+        {
             fprintf(stderr, "Window is not initialized.\n");
             return;
         }
 
-        if (!this->running) {
+        if (!this->running)
+        {
             fprintf(stderr, "Window is not running.\n");
             return;
         }
@@ -463,24 +554,28 @@ namespace Snake {
         this->running = false;
     }
 
-    bool Snake::Window::isMouseLockEnabled() {
+    bool Snake::Window::isMouseLockEnabled()
+    {
         return this->mouseLockEnabled;
     }
 
-    bool Snake::Window::isMouseLocked() {
+    bool Snake::Window::isMouseLocked()
+    {
         return this->mouseLocked;
     }
 
-    void Snake::Window::lockMouse() {
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+    void Snake::Window::lockMouse()
+    {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
         glfwSetInputMode(windowStruct->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         this->mouseLocked = true;
     }
 
-    void Snake::Window::unlockMouse() {
-        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*)this->windowStruct;
+    void Snake::Window::unlockMouse()
+    {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
         glfwSetInputMode(windowStruct->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 

@@ -5,8 +5,10 @@
 
 #include <vector>
 
-namespace Snake {
-    class EventManager {
+namespace Snake
+{
+    class EventManager
+    {
     protected:
         std::vector<void (*)()> windowFocusListeners;
         std::vector<void (*)()> windowUnfocusListeners;

@@ -4,8 +4,10 @@
 #include "window.hpp"
 #include "game.hpp"
 
-namespace Snake {
-    class Renderer {
+namespace Snake
+{
+    class Renderer
+    {
     protected:
         Snake::Window* window;
 
@@ -16,6 +18,7 @@ namespace Snake {
         bool running = false;
 
         void* rendererStruct;
+
     public:
         Renderer(Snake::Window* const window, Snake::Game* game);
         ~Renderer();

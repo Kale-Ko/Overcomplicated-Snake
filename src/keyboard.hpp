@@ -3,9 +3,12 @@
 
 #include <string>
 
-namespace Snake {
+namespace Snake
+{
     typedef unsigned int KeyMod_t;
-    namespace KeyMod {
+
+    namespace KeyMod
+    {
         const static KeyMod_t MOD_SHIFT = 0x01;
         const static KeyMod_t MOD_CONTROL = 0x02;
         const static KeyMod_t MOD_ALT = 0x04;
@@ -14,7 +17,9 @@ namespace Snake {
     };
 
     typedef unsigned int Key_t;
-    namespace Key {
+
+    namespace Key
+    {
         const static Key_t KEY_A = 0x00;
         const static Key_t KEY_B = 0x01;
         const static Key_t KEY_C = 0x02;
@@ -94,7 +99,9 @@ namespace Snake {
     };
 
     typedef unsigned int Button_t;
-    namespace Button {
+
+    namespace Button
+    {
         const static Button_t BUTTON_LEFT = 0x00;
         const static Button_t BUTTON_RIGHT = 0x01;
         const static Button_t BUTTON_MIDDLE = 0x02;
@@ -108,7 +115,8 @@ namespace Snake {
         const static Button_t BUTTON_UNKOWN = 0xFF;
     };
 
-    struct KeyStruct {
+    struct KeyStruct
+    {
         unsigned int scanCode;
 
         Snake::Key_t code;
@@ -117,7 +125,8 @@ namespace Snake {
         std::string string;
     };
 
-    struct ButtonStruct {
+    struct ButtonStruct
+    {
         unsigned int scanCode;
 
         Snake::Button_t code;

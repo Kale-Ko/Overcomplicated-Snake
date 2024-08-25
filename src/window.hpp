@@ -3,30 +3,36 @@
 
 #include "windowevents.hpp"
 
-namespace Snake {
-    struct WindowSize {
+namespace Snake
+{
+    struct WindowSize
+    {
         unsigned int width;
         unsigned int height;
     };
 
-    struct WindowPosition {
+    struct WindowPosition
+    {
         signed int x;
         signed int y;
     };
 
-    enum WindowPositionAlign {
+    enum WindowPositionAlign
+    {
         TOP_LEFT,
         CENTER
     };
 
-    struct WindowIcon {
+    struct WindowIcon
+    {
         unsigned int width;
         unsigned int height;
 
         unsigned char* data;
     };
 
-    class Window {
+    class Window
+    {
     protected:
         const char* title;
         const Snake::WindowIcon* icon;
