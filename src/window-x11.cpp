@@ -11,6 +11,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
+#include <X11/extensions/Xrandr.h>
 
 typedef Display X11Display;
 typedef Screen X11Screen;
@@ -23,6 +24,9 @@ namespace Snake
         X11Display* display;
         X11Screen* screen;
         X11Window window;
+
+        WindowPosition screenOffset;
+        WindowSize screenSize;
     };
 
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled)
@@ -178,13 +182,19 @@ namespace Snake
         {
             Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*) this->windowStruct;
 
+            if (position.x < 0 || position.x >= windowStruct->screenSize.width || position.y < 0 || position.y >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Position is outside screen bounds.\n");
+                return;
+            }
+
             switch (this->positionAlign)
             {
                 case TOP_LEFT:
-                    XMoveWindow(windowStruct->display, windowStruct->window, this->position.x, this->position.y);
+                    XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x, windowStruct->screenOffset.y + this->position.y);
                     break;
                 case CENTER:
-                    XMoveWindow(windowStruct->display, windowStruct->window, this->position.x + ((windowStruct->screen->width / 2) - (this->size.width / 2)), this->position.y + ((windowStruct->screen->height / 2) - (this->size.height / 2)));
+                    XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
                     break;
             }
         }
@@ -249,13 +259,57 @@ namespace Snake
             return -1;
         }
 
+        windowStruct->screenOffset = WindowPosition{ 0, 0 };
+        windowStruct->screenSize = WindowSize{ (unsigned int) windowStruct->screen->width, (unsigned int) windowStruct->screen->height };
+
+        {
+            X11Window _window, _window2;
+            int mouseX = -1, mouseY = -1;
+            int _windowX, _windowY;
+            unsigned int _mods;
+            if (XQueryPointer(windowStruct->display, windowStruct->screen->root, &_window, &_window2, &mouseX, &mouseY, &_windowX, &_windowY, &_mods) <= 0)
+            {
+                fprintf(stderr, "Failed to query mouse pointer.\n");
+                return -1;
+            }
+
+            int _opCode, _event, _error;
+            if (XQueryExtension(windowStruct->display, "RANDR", &_opCode, &_event, &_error) > 0)
+            {
+                XRRScreenResources* xScreenResources = XRRGetScreenResources(windowStruct->display, windowStruct->screen->root);
+
+                for (int j = 0; j < xScreenResources->noutput; j++)
+                {
+                    XRROutputInfo* xOutputInfo = XRRGetOutputInfo(windowStruct->display, xScreenResources, xScreenResources->outputs[j]);
+
+                    if (xOutputInfo->connection == RR_Connected && xOutputInfo->crtc > 0)
+                    {
+                        XRRCrtcInfo* xCrtcInfo = XRRGetCrtcInfo(windowStruct->display, xScreenResources, xOutputInfo->crtc);
+
+                        if (mouseX >= xCrtcInfo->x && mouseY >= xCrtcInfo->y && mouseX < (xCrtcInfo->x + xCrtcInfo->width) && mouseY < (xCrtcInfo->y + xCrtcInfo->height))
+                        {
+                            windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
+                            windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                            break;
+                        }
+
+                        XRRFreeCrtcInfo(xCrtcInfo);
+                    }
+
+                    XRRFreeOutputInfo(xOutputInfo);
+                }
+
+                XRRFreeScreenResources(xScreenResources);
+            }
+        }
+
         switch (this->positionAlign)
         {
             case TOP_LEFT:
-                windowStruct->window = XCreateSimpleWindow(windowStruct->display, windowStruct->screen->root, this->position.x, this->position.y, this->size.width, this->size.height, 1, windowStruct->screen->black_pixel, windowStruct->screen->black_pixel);
+                windowStruct->window = XCreateSimpleWindow(windowStruct->display, windowStruct->screen->root, windowStruct->screenOffset.x + this->position.x, windowStruct->screenOffset.y + this->position.y, this->size.width, this->size.height, 1, windowStruct->screen->black_pixel, windowStruct->screen->black_pixel);
                 break;
             case CENTER:
-                windowStruct->window = XCreateSimpleWindow(windowStruct->display, windowStruct->screen->root, this->position.x + ((windowStruct->screen->width / 2) - (this->size.width / 2)), this->position.y + ((windowStruct->screen->height / 2) - (this->size.height / 2)), this->size.width, this->size.height, 1, windowStruct->screen->black_pixel, windowStruct->screen->black_pixel);
+                windowStruct->window = XCreateSimpleWindow(windowStruct->display, windowStruct->screen->root, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)), this->size.width, this->size.height, 1, windowStruct->screen->black_pixel, windowStruct->screen->black_pixel);
                 break;
         }
 
@@ -311,10 +365,10 @@ namespace Snake
         switch (this->positionAlign)
         {
             case TOP_LEFT:
-                XMoveWindow(windowStruct->display, windowStruct->window, this->position.x, this->position.y);
+                XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x, windowStruct->screenOffset.y + this->position.y);
                 break;
             case CENTER:
-                XMoveWindow(windowStruct->display, windowStruct->window, this->position.x + ((windowStruct->screen->width / 2) - (this->size.width / 2)), this->position.y + ((windowStruct->screen->height / 2) - (this->size.height / 2)));
+                XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
                 break;
         }
 
