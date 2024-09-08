@@ -10,7 +10,7 @@
 
 namespace Snake
 {
-    const static std::map<const Snake::Key_t, const std::vector<const char*>> keyCodeToStrings = {
+    static const std::map<const Snake::Key_t, const std::vector<const char*>> keyCodeToStrings = {
         { Snake::Key::KEY_A,              { "a", "A", "A", "a" }             },
         { Snake::Key::KEY_B,              { "b", "B", "B", "b" }             },
         { Snake::Key::KEY_C,              { "c", "C", "C", "c" }             },
@@ -66,6 +66,29 @@ namespace Snake
         { Snake::Key::KEY_BACKSPACE,      { "\b", "\b", "\b", "\b" }         },
         { Snake::Key::KEY_TAB,            { "\t", "\t", "\t", "\t" }         },
 
+#if FN_KEYS_ARE_EMPTY_STRINGS
+        { Snake::Key::KEY_ESCAPE,         { "", "", "", "" }                 },
+
+        { Snake::Key::KEY_F1,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F2,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F3,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F4,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F5,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F6,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F7,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F8,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F9,             { "", "", "", "" }                 },
+        { Snake::Key::KEY_F10,            { "", "", "", "" }                 },
+        { Snake::Key::KEY_F11,            { "", "", "", "" }                 },
+        { Snake::Key::KEY_F12,            { "", "", "", "" }                 },
+
+        { Snake::Key::KEY_SHIFT,          { "", "", "", "" }                 },
+        { Snake::Key::KEY_CONTROL,        { "", "", "", "" }                 },
+        { Snake::Key::KEY_ALT,            { "", "", "", "" }                 },
+        { Snake::Key::KEY_META,           { "", "", "", "" }                 },
+        { Snake::Key::KEY_CAPS_LOCK,      { "", "", "", "" }                 },
+#endif
+
         { Snake::Key::KEY_UNKOWN,         { "�", "�", "�", "�" }     }
     };
 
@@ -78,27 +101,14 @@ namespace Snake
             bool shift = (modifiers & Snake::KeyMod::MOD_SHIFT) == Snake::KeyMod::MOD_SHIFT;
             bool caps = (modifiers & Snake::KeyMod::MOD_CAPS_LOCK) == Snake::KeyMod::MOD_CAPS_LOCK;
 
-            if (shift && !caps)
-            {
-                const char* ogData = vector.at(1);
-                return std::string(ogData);
-            } else if (shift && caps)
-            {
-                const char* ogData = vector.at(3);
-                return std::string(ogData);
-            } else if (!shift && caps)
-            {
-                const char* ogData = vector.at(2);
-                return std::string(ogData);
-            } else
-            {
-                const char* ogData = vector.at(0);
-                return std::string(ogData);
-            }
+            int index = (shift ? (caps ? 3 : 1) : (caps ? 2 : 0));
+
+            const char* data = vector.at(index);
+            return std::string(data);
         } else
         {
-            const char* ogData = keyCodeToStrings.at(Snake::Key::KEY_UNKOWN)[0];
-            return std::string(ogData);
+            const char* data = keyCodeToStrings.at(Snake::Key::KEY_UNKOWN).at(0);
+            return std::string(data);
         }
     }
 };

@@ -4,7 +4,7 @@
 
 namespace Snake
 {
-    const static std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
+    static const std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
         { GLFW_KEY_A,             Snake::Key::KEY_A              },
         { GLFW_KEY_B,             Snake::Key::KEY_B              },
         { GLFW_KEY_C,             Snake::Key::KEY_C              },
@@ -84,7 +84,7 @@ namespace Snake
         { GLFW_KEY_RIGHT_SUPER,   Snake::Key::KEY_META           },
         { GLFW_KEY_CAPS_LOCK,     Snake::Key::KEY_CAPS_LOCK      }
     };
-    const static std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
+    static const std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
         { GLFW_MOUSE_BUTTON_LEFT,   Snake::Button::BUTTON_LEFT   },
         { GLFW_MOUSE_BUTTON_RIGHT,  Snake::Button::BUTTON_RIGHT  },
         { GLFW_MOUSE_BUTTON_MIDDLE, Snake::Button::BUTTON_MIDDLE },
@@ -128,10 +128,14 @@ namespace Snake
         {
             keyMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
+        if ((modifiers & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK)
+        {
+            keyMods |= Snake::KeyMod::MOD_CAPS_LOCK;
+        }
 
         std::string string = getStringFromKeyCode(key, keyMods);
 
-        return KeyStruct{ .scanCode = scanCode, .code = key, .modifiers = keyMods, .string = string };
+        return KeyStruct{ .code = key, .modifiers = keyMods, .string = string };
     }
 
     const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
@@ -166,7 +170,11 @@ namespace Snake
         {
             buttonMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
+        if ((modifiers & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK)
+        {
+            buttonMods |= Snake::KeyMod::MOD_CAPS_LOCK;
+        }
 
-        return ButtonStruct{ .scanCode = scanCode, .code = button, .modifiers = buttonMods };
+        return ButtonStruct{ .code = button, .modifiers = buttonMods };
     }
 };

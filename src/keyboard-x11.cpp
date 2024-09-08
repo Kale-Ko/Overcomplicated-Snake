@@ -6,7 +6,7 @@
 
 namespace Snake
 {
-    const static std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
+    static const std::map<const unsigned int, const Snake::Key_t> scanCodeToKeyCode = {
         { XK_a,            Snake::Key::KEY_A              },
         { XK_b,            Snake::Key::KEY_B              },
         { XK_c,            Snake::Key::KEY_C              },
@@ -59,6 +59,7 @@ namespace Snake
 
         { XK_space,        Snake::Key::KEY_SPACE          },
         { XK_Return,       Snake::Key::KEY_ENTER          },
+        { XK_Linefeed,     Snake::Key::KEY_ENTER          },
         { XK_BackSpace,    Snake::Key::KEY_BACKSPACE      },
         { XK_Tab,          Snake::Key::KEY_TAB            },
         { XK_Escape,       Snake::Key::KEY_ESCAPE         },
@@ -86,7 +87,7 @@ namespace Snake
         { XK_Super_R,      Snake::Key::KEY_META           },
         { XK_Caps_Lock,    Snake::Key::KEY_CAPS_LOCK      }
     };
-    const static std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
+    static const std::map<const unsigned int, const Snake::Button_t> scanCodeToButtonCode = {
         { 0x01, Snake::Button::BUTTON_LEFT   },
         { 0x03, Snake::Button::BUTTON_RIGHT  },
         { 0x02, Snake::Button::BUTTON_MIDDLE },
@@ -132,10 +133,15 @@ namespace Snake
         {
             keyMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
+        if ((modifiers & 0x10) == 0x10)
+        {
+            keyMods |= Snake::KeyMod::MOD_NUM_LOCK;
+        }
+        // TODO Find out what 0x20 is
 
         std::string string = getStringFromKeyCode(key, keyMods);
 
-        return KeyStruct{ .scanCode = scanCode, .code = key, .modifiers = keyMods, .string = string };
+        return KeyStruct{ .code = key, .modifiers = keyMods, .string = string };
     }
 
     const Snake::ButtonStruct getButtonFromScanCode(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
@@ -170,7 +176,12 @@ namespace Snake
         {
             buttonMods |= Snake::KeyMod::MOD_CAPS_LOCK;
         }
+        if ((modifiers & 0x10) == 0x10)
+        {
+            buttonMods |= Snake::KeyMod::MOD_NUM_LOCK;
+        }
+        // TODO Find out what 0x20 is
 
-        return ButtonStruct{ .scanCode = scanCode, .code = button, .modifiers = buttonMods };
+        return ButtonStruct{ .code = button, .modifiers = buttonMods };
     }
 };

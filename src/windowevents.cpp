@@ -1,10 +1,13 @@
 #include "windowevents.hpp"
 
 #include "keyboard.hpp"
+#include "uuid.hpp"
 
 #include <cstdlib>
 #include <cstring>
 
+#include <functional>
+#include <map>
 #include <vector>
 #include <algorithm>
 
@@ -20,153 +23,149 @@ namespace Snake
 
     void Snake::EventManager::emitWindowFocusEvent()
     {
-        for (void (*listener)() : this->windowFocusListeners)
+        for (const auto& listenerEntry : this->windowFocusListeners)
         {
-            listener();
+            listenerEntry.second();
         }
     }
 
-    void Snake::EventManager::registerWindowFocusListener(void (*listener)())
+    UUID* Snake::EventManager::registerWindowFocusListener(const WindowFocusListener& listener)
     {
-        this->windowFocusListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->windowFocusListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterWindowFocusListener(void (*listener)())
+    void Snake::EventManager::unregisterWindowFocusListener(UUID* uuid)
     {
-        this->windowFocusListeners.erase(std::remove(this->windowFocusListeners.begin(), this->windowFocusListeners.end(), listener), this->windowFocusListeners.end());
+        this->windowFocusListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitWindowUnfocusEvent()
     {
-        for (void (*listener)() : this->windowUnfocusListeners)
+        for (const auto& listenerEntry : this->windowUnfocusListeners)
         {
-            listener();
+            listenerEntry.second();
         }
     }
 
-    void Snake::EventManager::registerWindowUnfocusListener(void (*listener)())
+    UUID* Snake::EventManager::registerWindowUnfocusListener(const WindowUnfocusListener& listener)
     {
-        this->windowUnfocusListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->windowUnfocusListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterWindowUnfocusListener(void (*listener)())
+    void Snake::EventManager::unregisterWindowUnfocusListener(UUID* uuid)
     {
-        this->windowUnfocusListeners.erase(std::remove(this->windowUnfocusListeners.begin(), this->windowUnfocusListeners.end(), listener), this->windowUnfocusListeners.end());
+        this->windowUnfocusListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitWindowCloseEvent()
     {
-        for (void (*listener)() : this->windowCloseListeners)
+        for (const auto& listenerEntry : this->windowCloseListeners)
         {
-            listener();
+            listenerEntry.second();
         }
     }
 
-    void Snake::EventManager::registerWindowCloseListener(void (*listener)())
+    UUID* Snake::EventManager::registerWindowCloseListener(const WindowCloseListener& listener)
     {
-        this->windowCloseListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->windowCloseListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterWindowCloseListener(void (*listener)())
+    void Snake::EventManager::unregisterWindowCloseListener(UUID* uuid)
     {
-        this->windowCloseListeners.erase(std::remove(this->windowCloseListeners.begin(), this->windowCloseListeners.end(), listener), this->windowCloseListeners.end());
+        this->windowCloseListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitWindowMoveEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const signed int x, const signed int y) : this->windowMoveListeners)
+        for (const auto& listenerEntry : this->windowMoveListeners)
         {
-            listener(x, y);
+            listenerEntry.second(x, y);
         }
     }
 
-    void Snake::EventManager::registerWindowMoveListener(void (*listener)(const signed int x, const signed int y))
+    UUID* Snake::EventManager::registerWindowMoveListener(const WindowMoveListener& listener)
     {
-        this->windowMoveListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->windowMoveListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterWindowMoveListener(void (*listener)(const signed int x, const signed int y))
+    void Snake::EventManager::unregisterWindowMoveListener(UUID* uuid)
     {
-        this->windowMoveListeners.erase(std::remove(this->windowMoveListeners.begin(), this->windowMoveListeners.end(), listener), this->windowMoveListeners.end());
+        this->windowMoveListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitWindowResizeEvent(const unsigned int width, const unsigned int height)
     {
-        for (void (*listener)(const unsigned int width, const unsigned int height) : this->windowResizeListeners)
+        for (const auto& listenerEntry : this->windowResizeListeners)
         {
-            listener(width, height);
+            listenerEntry.second(width, height);
         }
     }
 
-    void Snake::EventManager::registerWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height))
+    UUID* Snake::EventManager::registerWindowResizeListener(const WindowResizeListener& listener)
     {
-        this->windowResizeListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->windowResizeListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterWindowResizeListener(void (*listener)(const unsigned int width, const unsigned int height))
+    void Snake::EventManager::unregisterWindowResizeListener(UUID* uuid)
     {
-        this->windowResizeListeners.erase(std::remove(this->windowResizeListeners.begin(), this->windowResizeListeners.end(), listener), this->windowResizeListeners.end());
+        this->windowResizeListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitMouseMoveEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const signed int x, const signed int y) : this->mouseMoveListeners)
+        for (const auto& listenerEntry : this->mouseMoveListeners)
         {
-            listener(x, y);
+            listenerEntry.second(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseMoveListener(void (*listener)(const signed int x, const signed int y))
+    UUID* Snake::EventManager::registerMouseMoveListener(const MouseMoveListener& listener)
     {
-        this->mouseMoveListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->mouseMoveListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterMouseMoveListener(void (*listener)(const signed int x, const signed int y))
+    void Snake::EventManager::unregisterMouseMoveListener(UUID* uuid)
     {
-        this->mouseMoveListeners.erase(std::remove(this->mouseMoveListeners.begin(), this->mouseMoveListeners.end(), listener), this->mouseMoveListeners.end());
+        this->mouseMoveListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitMouseScrollEvent(const signed int x, const signed int y)
     {
-        for (void (*listener)(const signed int x, const signed int y) : this->mouseScrollListeners)
+        for (const auto& listenerEntry : this->mouseScrollListeners)
         {
-            listener(x, y);
+            listenerEntry.second(x, y);
         }
     }
 
-    void Snake::EventManager::registerMouseScrollListener(void (*listener)(const signed int x, const signed int y))
+    UUID* Snake::EventManager::registerMouseScrollListener(const MouseScrollListener& listener)
     {
-        this->mouseScrollListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->mouseScrollListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterMouseScrollListener(void (*listener)(const signed int x, const signed int y))
+    void Snake::EventManager::unregisterMouseScrollListener(UUID* uuid)
     {
-        this->mouseScrollListeners.erase(std::remove(this->mouseScrollListeners.begin(), this->mouseScrollListeners.end(), listener), this->mouseScrollListeners.end());
-    }
-
-    void Snake::EventManager::emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers)
-    {
-        throw "Unimplemented";
-    }
-
-    void Snake::EventManager::emitButtonPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
-    {
-        const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
-
-        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonPressListeners)
-        {
-            listener(button);
-        }
-    }
-
-    void Snake::EventManager::registerButtonPressListener(void (*listener)(const Snake::ButtonStruct button))
-    {
-        this->buttonPressListeners.push_back(listener);
-    }
-
-    void Snake::EventManager::unregisterButtonPressListener(void (*listener)(const Snake::ButtonStruct button))
-    {
-        this->buttonPressListeners.erase(std::remove(this->buttonPressListeners.begin(), this->buttonPressListeners.end(), listener), this->buttonPressListeners.end());
+        this->mouseScrollListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitButtonDownEvent(const unsigned int scanCode, const unsigned int modifiers)
@@ -178,20 +177,23 @@ namespace Snake
     {
         const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
-        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonDownListeners)
+        for (const auto& listenerEntry : this->buttonDownListeners)
         {
-            listener(button);
+            listenerEntry.second(button);
         }
     }
 
-    void Snake::EventManager::registerButtonDownListener(void (*listener)(const Snake::ButtonStruct button))
+    UUID* Snake::EventManager::registerButtonDownListener(const ButtonDownListener& listener)
     {
-        this->buttonDownListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->buttonDownListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterButtonDownListener(void (*listener)(const Snake::ButtonStruct button))
+    void Snake::EventManager::unregisterButtonDownListener(UUID* uuid)
     {
-        this->buttonDownListeners.erase(std::remove(this->buttonDownListeners.begin(), this->buttonDownListeners.end(), listener), this->buttonDownListeners.end());
+        this->buttonDownListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitButtonUpEvent(const unsigned int scanCode, const unsigned int modifiers)
@@ -203,45 +205,23 @@ namespace Snake
     {
         const Snake::ButtonStruct button = Snake::getButtonFromScanCode(scanCode, modifiers, extra);
 
-        for (void (*listener)(const Snake::ButtonStruct button) : this->buttonUpListeners)
+        for (const auto& listenerEntry : this->buttonUpListeners)
         {
-            listener(button);
+            listenerEntry.second(button);
         }
     }
 
-    void Snake::EventManager::registerButtonUpListener(void (*listener)(const Snake::ButtonStruct button))
+    UUID* Snake::EventManager::registerButtonUpListener(const ButtonUpListener& listener)
     {
-        this->buttonUpListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->buttonUpListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterButtonUpListener(void (*listener)(const Snake::ButtonStruct button))
+    void Snake::EventManager::unregisterButtonUpListener(UUID* uuid)
     {
-        this->buttonUpListeners.erase(std::remove(this->buttonUpListeners.begin(), this->buttonUpListeners.end(), listener), this->buttonUpListeners.end());
-    }
-
-    void Snake::EventManager::emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers)
-    {
-        throw "Unimplemented";
-    }
-
-    void Snake::EventManager::emitKeyPressEvent(const unsigned int scanCode, const unsigned int modifiers, const void* const extra)
-    {
-        const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
-
-        for (void (*listener)(const Snake::KeyStruct key) : this->keyPressListeners)
-        {
-            listener(key);
-        }
-    }
-
-    void Snake::EventManager::registerKeyPressListener(void (*listener)(const Snake::KeyStruct key))
-    {
-        this->keyPressListeners.push_back(listener);
-    }
-
-    void Snake::EventManager::unregisterKeyPressListener(void (*listener)(const Snake::KeyStruct key))
-    {
-        this->keyPressListeners.erase(std::remove(this->keyPressListeners.begin(), this->keyPressListeners.end(), listener), this->keyPressListeners.end());
+        this->buttonUpListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitKeyDownEvent(const unsigned int scanCode, const unsigned int modifiers)
@@ -253,20 +233,23 @@ namespace Snake
     {
         const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
 
-        for (void (*listener)(const Snake::KeyStruct key) : this->keyDownListeners)
+        for (const auto& listenerEntry : this->keyDownListeners)
         {
-            listener(key);
+            listenerEntry.second(key);
         }
     }
 
-    void Snake::EventManager::registerKeyDownListener(void (*listener)(const Snake::KeyStruct key))
+    UUID* Snake::EventManager::registerKeyDownListener(const KeyDownListener& listener)
     {
-        this->keyDownListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->keyDownListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterKeyDownListener(void (*listener)(const Snake::KeyStruct key))
+    void Snake::EventManager::unregisterKeyDownListener(UUID* uuid)
     {
-        this->keyDownListeners.erase(std::remove(this->keyDownListeners.begin(), this->keyDownListeners.end(), listener), this->keyDownListeners.end());
+        this->keyDownListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 
     void Snake::EventManager::emitKeyUpEvent(const unsigned int scanCode, const unsigned int modifiers)
@@ -278,19 +261,22 @@ namespace Snake
     {
         const Snake::KeyStruct key = Snake::getKeyFromScanCode(scanCode, modifiers, extra);
 
-        for (void (*listener)(const Snake::KeyStruct key) : this->keyUpListeners)
+        for (const auto& listenerEntry : this->keyUpListeners)
         {
-            listener(key);
+            listenerEntry.second(key);
         }
     }
 
-    void Snake::EventManager::registerKeyUpListener(void (*listener)(const Snake::KeyStruct key))
+    UUID* Snake::EventManager::registerKeyUpListener(const KeyUpListener& listener)
     {
-        this->keyUpListeners.push_back(listener);
+        UUID* uuid = randomUuid();
+        this->keyUpListeners.insert(std::make_pair(uuid, listener));
+        return uuid;
     }
 
-    void Snake::EventManager::unregisterKeyUpListener(void (*listener)(const Snake::KeyStruct key))
+    void Snake::EventManager::unregisterKeyUpListener(UUID* uuid)
     {
-        this->keyUpListeners.erase(std::remove(this->keyUpListeners.begin(), this->keyUpListeners.end(), listener), this->keyUpListeners.end());
+        this->keyUpListeners.erase(uuid);
+        deleteUuid(uuid);
     }
 };
