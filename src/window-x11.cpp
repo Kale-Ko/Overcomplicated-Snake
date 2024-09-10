@@ -344,6 +344,8 @@ namespace Snake
             int _opCode, _event, _error;
             if (XQueryExtension(windowStruct->display, "RANDR", &_opCode, &_event, &_error) > 0)
             {
+                RROutput primaryOutput = XRRGetOutputPrimary(windowStruct->display, windowStruct->screen->root);
+
                 XRRScreenResources* xScreenResources = XRRGetScreenResources(windowStruct->display, windowStruct->screen->root);
 
                 for (int j = 0; j < xScreenResources->noutput; j++)
@@ -354,10 +356,28 @@ namespace Snake
                     {
                         XRRCrtcInfo* xCrtcInfo = XRRGetCrtcInfo(windowStruct->display, xScreenResources, xOutputInfo->crtc);
 
+                        bool found = false;
+                        switch (this->monitorType)
+                        {
+                            case PRIMARY:
+                                if (xScreenResources->outputs[j] == primaryOutput)
+                                {
+                                    windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
+                                    windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                                    found = true;
+                                }
+                                break;
+                            case CURRENT:
                         if (mouseX >= xCrtcInfo->x && mouseY >= xCrtcInfo->y && mouseX < (xCrtcInfo->x + xCrtcInfo->width) && mouseY < (xCrtcInfo->y + xCrtcInfo->height))
                         {
                             windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
                             windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                                    found = true;
+                                }
+                                break;
+                        }
+                        if (found)
+                        {
                             break;
                         }
 
