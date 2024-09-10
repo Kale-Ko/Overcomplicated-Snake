@@ -302,11 +302,11 @@ namespace Snake
         {
             (*x11RefCount)++;
 
-        if (XInitThreads() == 0)
-        {
-            fprintf(stderr, "Failed to initialize X11.\n");
-            return -1;
-        }
+            if (XInitThreads() == 0)
+            {
+                fprintf(stderr, "Failed to initialize X11.\n");
+                return -1;
+            }
         }
 
         this->windowStruct = new Snake::X11WindowStruct();
@@ -368,10 +368,10 @@ namespace Snake
                                 }
                                 break;
                             case CURRENT:
-                        if (mouseX >= xCrtcInfo->x && mouseY >= xCrtcInfo->y && mouseX < (xCrtcInfo->x + xCrtcInfo->width) && mouseY < (xCrtcInfo->y + xCrtcInfo->height))
-                        {
-                            windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
-                            windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                                if (mouseX >= xCrtcInfo->x && mouseY >= xCrtcInfo->y && mouseX < (xCrtcInfo->x + xCrtcInfo->width) && mouseY < (xCrtcInfo->y + xCrtcInfo->height))
+                                {
+                                    windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
+                                    windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
                                     found = true;
                                 }
                                 break;
@@ -388,6 +388,76 @@ namespace Snake
                 }
 
                 XRRFreeScreenResources(xScreenResources);
+            }
+
+            {
+                Atom workAreaAtom = XInternAtom(windowStruct->display, "_NET_WORKAREA", False);
+                if (workAreaAtom != None)
+                {
+                    Atom workType;
+                    int workFormat;
+                    unsigned long workItemCount, workBytesAfter;
+                    unsigned char* workAreaData;
+
+                    int workStatus = XGetWindowProperty(windowStruct->display, windowStruct->screen->root, workAreaAtom, 0, LONG_MAX, False, XA_CARDINAL, &workType, &workFormat, &workItemCount, &workBytesAfter, &workAreaData);
+                    if (workStatus >= 0)
+                    {
+                        long desktopIndex = 0;
+
+                        Atom desktopAtom = XInternAtom(windowStruct->display, "_NET_CURRENT_DESKTOP", False);
+                        if (desktopAtom != None)
+                        {
+                            Atom desktopType;
+                            int desktopFormat;
+                            unsigned long desktopItemCount, desktopBytesAfter;
+                            unsigned char* desktopData;
+
+                            int desktopStatus = XGetWindowProperty(windowStruct->display, windowStruct->screen->root, desktopAtom, 0, LONG_MAX, False, XA_CARDINAL, &desktopType, &desktopFormat, &desktopItemCount, &desktopBytesAfter, &desktopData);
+                            if (desktopStatus >= 0)
+                            {
+                                long* desktop = (long*) desktopData;
+                                if (desktopItemCount > 0)
+                                {
+                                    desktopIndex = desktop[0] * 4;
+                                }
+
+                                XFree(desktopData);
+                            }
+                        }
+
+                        if (workItemCount >= 4 && desktopIndex + 3 < workItemCount)
+                        {
+                            long* workArea = (long*) workAreaData;
+                            int workX = workArea[desktopIndex + 0];
+                            int workY = workArea[desktopIndex + 1];
+                            unsigned int workWidth = workArea[desktopIndex + 2];
+                            unsigned int workHeight = workArea[desktopIndex + 3];
+
+                            if (windowStruct->screenOffset.x < workX)
+                            {
+                                windowStruct->screenSize.width -= workX - windowStruct->screenOffset.x;
+                                windowStruct->screenOffset.x = workX;
+                            }
+
+                            if (windowStruct->screenOffset.y < workY)
+                            {
+                                windowStruct->screenSize.height -= workY - windowStruct->screenOffset.y;
+                                windowStruct->screenOffset.y = workY;
+                            }
+
+                            if (windowStruct->screenOffset.x + windowStruct->screenSize.width > workX + workWidth)
+                            {
+                                windowStruct->screenSize.width = workX - windowStruct->screenOffset.x + workWidth;
+                            }
+                            if (windowStruct->screenOffset.y + windowStruct->screenSize.height > workY + workHeight)
+                            {
+                                windowStruct->screenSize.height = workY - windowStruct->screenOffset.y + workHeight;
+                            }
+                        }
+
+                        XFree(workAreaData);
+                    }
+                }
             }
         }
 
@@ -493,7 +563,7 @@ namespace Snake
         (*x11RefCount)--;
         if (*x11RefCount == 0)
         {
-        XFreeThreads();
+            XFreeThreads();
         }
 
         delete(Snake::X11WindowStruct*) this->windowStruct;
