@@ -142,6 +142,12 @@ namespace Snake
         {
             Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*) this->windowStruct;
 
+            if (this->position.x < 0 || this->position.x + size.width >= windowStruct->screenSize.width || this->position.y < 0 || this->position.y + size.height >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Size is outside screen bounds.\n");
+                return;
+            }
+
             XResizeWindow(windowStruct->display, windowStruct->window, this->size.width, this->size.height);
         }
     }
@@ -167,6 +173,11 @@ namespace Snake
         return this->positionAlign;
     }
 
+    const Snake::WindowMonitorType Snake::Window::getMonitorType()
+    {
+        return this->monitorType;
+    }
+
     void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign)
     {
         if (this->destroyed)
@@ -182,7 +193,41 @@ namespace Snake
         {
             Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*) this->windowStruct;
 
-            if (position.x < 0 || position.x >= windowStruct->screenSize.width || position.y < 0 || position.y >= windowStruct->screenSize.height)
+            if (position.x < 0 || position.x + this->size.width >= windowStruct->screenSize.width || position.y < 0 || position.y + this->size.height >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Position is outside screen bounds.\n");
+                return;
+            }
+
+            switch (this->positionAlign)
+            {
+                case TOP_LEFT:
+                    XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x, windowStruct->screenOffset.y + this->position.y);
+                    break;
+                case CENTER:
+                    XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
+                    break;
+            }
+        }
+    }
+
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType)
+    {
+        if (this->destroyed)
+        {
+            fprintf(stderr, "Window is destroyed.\n");
+            return;
+        }
+
+        this->position = position;
+        this->positionAlign = positionAlign;
+        this->monitorType = monitorType;
+
+        if (this->initialized)
+        {
+            Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*) this->windowStruct;
+
+            if (position.x < 0 || position.x + this->size.width >= windowStruct->screenSize.width || position.y < 0 || position.y + this->size.height >= windowStruct->screenSize.height)
             {
                 fprintf(stderr, "Position is outside screen bounds.\n");
                 return;

@@ -154,6 +154,12 @@ namespace Snake
         {
             Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
+            if (this->position.x < 0 || this->position.x + size.width >= windowStruct->screenSize.width || this->position.y < 0 || this->position.y + size.height >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Size is outside screen bounds.\n");
+                return;
+            }
+
             glfwSetWindowSize(windowStruct->window, this->size.width, this->size.height);
         }
     }
@@ -184,6 +190,11 @@ namespace Snake
         return this->positionAlign;
     }
 
+    const Snake::WindowMonitorType Snake::Window::getMonitorType()
+    {
+        return this->monitorType;
+    }
+
     void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign)
     {
         if (this->destroyed)
@@ -198,6 +209,12 @@ namespace Snake
         if (this->initialized)
         {
             Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
+
+            if (position.x < 0 || position.x + this->size.width >= windowStruct->screenSize.width || position.y < 0 || position.y + this->size.height >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Position is outside screen bounds.\n");
+                return;
+            }
 
             {
                 GLFWmonitor* monitor = NULL;
@@ -246,6 +263,12 @@ namespace Snake
         if (this->initialized)
         {
             Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
+
+            if (position.x < 0 || position.x + this->size.width >= windowStruct->screenSize.width || position.y < 0 || position.y + this->size.height >= windowStruct->screenSize.height)
+            {
+                fprintf(stderr, "Position is outside screen bounds.\n");
+                return;
+            }
 
             {
                 GLFWmonitor* monitor = NULL;
