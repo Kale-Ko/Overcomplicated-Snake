@@ -352,38 +352,6 @@ namespace Snake
         Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
         this->initialized = true;
 
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_RESIZABLE, this->resizable ? GLFW_TRUE : GLFW_FALSE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
-
-        windowStruct->window = glfwCreateWindow(this->size.width, this->size.height, (char*) this->title, NULL, NULL);
-        if (windowStruct->window == NULL)
-        {
-            fprintf(stderr, "Failed to create GLFW window.\n");
-            return -1;
-        }
-
-        glfwWindowMap.insert(std::make_pair(windowStruct->window, this));
-
-        if (icon != NULL)
-        {
-            GLFWimage glfwIcon;
-            glfwIcon.width = this->icon->width;
-            glfwIcon.height = this->icon->height;
-            glfwIcon.pixels = this->icon->data;
-            glfwSetWindowIcon(windowStruct->window, 1, &glfwIcon);
-        } else
-        {
-            glfwSetWindowIcon(windowStruct->window, 0, NULL);
-        }
-
-        glfwSetWindowSize(windowStruct->window, this->size.width, this->size.height);
-
-        if (!this->resizable)
-        {
-            glfwSetWindowSizeLimits(windowStruct->window, this->size.width, this->size.height, this->size.width, this->size.height);
-        }
-
         {
             windowStruct->screenOffset = WindowPosition{ 0, 0 };
             windowStruct->screenSize = WindowSize{ 0, 0 };
@@ -407,14 +375,48 @@ namespace Snake
             glfwGetMonitorWorkarea(monitor, &windowStruct->screenOffset.x, &windowStruct->screenOffset.y, (int*) &windowStruct->screenSize.width, (int*) &windowStruct->screenSize.height);
         }
 
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, this->resizable ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+
         switch (this->positionAlign)
         {
             case TOP_LEFT:
-                glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
+                glfwWindowHint(GLFW_POSITION_X, windowStruct->screenOffset.x + this->position.x);
+                glfwWindowHint(GLFW_POSITION_Y, windowStruct->screenOffset.y + this->position.y);
                 break;
             case CENTER:
-                glfwSetWindowPos(windowStruct->window, this->position.x + windowStruct->screenOffset.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), this->position.y + windowStruct->screenOffset.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
+                glfwWindowHint(GLFW_POSITION_X, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)));
+                glfwWindowHint(GLFW_POSITION_Y, windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
                 break;
+        }
+
+        windowStruct->window = glfwCreateWindow(this->size.width, this->size.height, (char*) this->title, NULL, NULL);
+        if (windowStruct->window == NULL)
+        {
+            fprintf(stderr, "Failed to create GLFW window.\n");
+            return -1;
+        }
+
+        glfwWindowMap.insert(std::make_pair(windowStruct->window, this));
+
+        if (icon != NULL)
+        {
+            GLFWimage glfwIcon;
+            glfwIcon.width = this->icon->width;
+            glfwIcon.height = this->icon->height;
+            glfwIcon.pixels = this->icon->data;
+            glfwSetWindowIcon(windowStruct->window, 1, &glfwIcon);
+        } else
+        {
+            glfwSetWindowIcon(windowStruct->window, 0, NULL);
+        }
+
+        if (!this->resizable)
+        {
+            glfwSetWindowSizeLimits(windowStruct->window, this->size.width, this->size.height, this->size.width, this->size.height);
         }
 
         // glfwMakeContextCurrent(windowStruct->window);

@@ -507,8 +507,6 @@ namespace Snake
         classInfo.res_class = (char*) "WindowMain";
         XSetClassHint(windowStruct->display, windowStruct->window, &classInfo);
 
-        XResizeWindow(windowStruct->display, windowStruct->window, this->size.width, this->size.height);
-
         if (!this->resizable)
         {
             XSizeHints sizeInfo;
@@ -518,16 +516,6 @@ namespace Snake
             sizeInfo.max_width = this->size.width;
             sizeInfo.max_height = this->size.height;
             XSetWMNormalHints(windowStruct->display, windowStruct->window, &sizeInfo);
-        }
-
-        switch (this->positionAlign)
-        {
-            case TOP_LEFT:
-                XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x, windowStruct->screenOffset.y + this->position.y);
-                break;
-            case CENTER:
-                XMoveWindow(windowStruct->display, windowStruct->window, windowStruct->screenOffset.x + this->position.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), windowStruct->screenOffset.y + this->position.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
-                break;
         }
 
         return 1;
