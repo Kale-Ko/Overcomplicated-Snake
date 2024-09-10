@@ -23,6 +23,12 @@ namespace Snake
         CENTER
     };
 
+    enum WindowMonitorType
+    {
+        PRIMARY,
+        CURRENT
+    };
+
     struct WindowIcon
     {
         unsigned int width;
@@ -42,6 +48,7 @@ namespace Snake
 
         Snake::WindowPosition position;
         Snake::WindowPositionAlign positionAlign;
+        Snake::WindowMonitorType monitorType;
 
         bool mouseLockEnabled;
         bool mouseLocked = false;
@@ -50,13 +57,13 @@ namespace Snake
         bool destroyed = false;
         bool running = false;
 
-        unsigned long windowId;
         void* windowStruct;
 
-        Snake::EventManager eventManager = Snake::EventManager();
+        Snake::EventManager eventManager;
 
     public:
         Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled);
+        Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType, const bool mouseLockEnabled);
         ~Window();
 
         const char* getTitle();
@@ -72,7 +79,9 @@ namespace Snake
 
         const Snake::WindowPosition getPosition();
         const Snake::WindowPositionAlign getPositionAlign();
+        const Snake::WindowMonitorType getMonitorType();
         void setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign);
+        void setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, Snake::WindowMonitorType monitorType);
         void __setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign);
 
         Snake::EventManager* const getEventManager();

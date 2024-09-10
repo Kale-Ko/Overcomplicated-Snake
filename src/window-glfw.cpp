@@ -17,6 +17,9 @@ namespace Snake
     struct GLFWWindowStruct
     {
         GLFWwindow* window;
+
+        WindowPosition screenOffset;
+        WindowSize screenSize;
     };
 
     static int* glfwRefCount = new int{ 0 };
@@ -38,6 +41,22 @@ namespace Snake
 
         this->position = position;
         this->positionAlign = positionAlign;
+        this->monitorType = WindowMonitorType::PRIMARY;
+
+        this->mouseLockEnabled = mouseLockEnabled;
+    }
+
+    Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType, const bool mouseLockEnabled)
+    {
+        this->title = title;
+        this->icon = icon;
+
+        this->size = size;
+        this->resizable = resizable;
+
+        this->position = position;
+        this->positionAlign = positionAlign;
+        this->monitorType = monitorType;
 
         this->mouseLockEnabled = mouseLockEnabled;
     }
@@ -180,17 +199,81 @@ namespace Snake
         {
             Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
 
+            {
+                GLFWmonitor* monitor = NULL;
+                switch (this->monitorType)
+                {
+                    case PRIMARY:
+                        monitor = glfwGetPrimaryMonitor();
+                        if (monitor == NULL)
+                        {
+                            fprintf(stderr, "Failed to find primary monitor.\n");
+                            return;
+                        }
+                        break;
+                    case CURRENT:
+                        fprintf(stderr, "GLFW does not support CURRENT monitor mode.\n");
+                        return;
+                }
+
+                glfwGetMonitorWorkarea(monitor, &windowStruct->screenOffset.x, &windowStruct->screenOffset.y, (int*) &windowStruct->screenSize.width, (int*) &windowStruct->screenSize.height);
+            }
+
             switch (this->positionAlign)
             {
                 case TOP_LEFT:
                     glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
                     break;
                 case CENTER:
-                    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-                    int x, y, width, height;
-                    glfwGetMonitorWorkarea(monitor, &x, &y, &width, &height);
+                    glfwSetWindowPos(windowStruct->window, this->position.x + windowStruct->screenOffset.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), this->position.y + windowStruct->screenOffset.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
+                    break;
+            }
+        }
+    }
 
-                    glfwSetWindowPos(windowStruct->window, this->position.x + x + ((width / 2) - (this->size.width / 2)), this->position.y + y + ((height / 2) - (this->size.height / 2)));
+    void Snake::Window::setPosition(const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType)
+    {
+        if (this->destroyed)
+        {
+            fprintf(stderr, "Window is destroyed.\n");
+            return;
+        }
+
+        this->position = position;
+        this->positionAlign = positionAlign;
+        this->monitorType = monitorType;
+
+        if (this->initialized)
+        {
+            Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
+
+            {
+                GLFWmonitor* monitor = NULL;
+                switch (this->monitorType)
+                {
+                    case PRIMARY:
+                        monitor = glfwGetPrimaryMonitor();
+                        if (monitor == NULL)
+                        {
+                            fprintf(stderr, "Failed to find primary monitor.\n");
+                            return;
+                        }
+                        break;
+                    case CURRENT:
+                        fprintf(stderr, "GLFW does not support CURRENT monitor mode.\n");
+                        return;
+                }
+
+                glfwGetMonitorWorkarea(monitor, &windowStruct->screenOffset.x, &windowStruct->screenOffset.y, (int*) &windowStruct->screenSize.width, (int*) &windowStruct->screenSize.height);
+            }
+
+            switch (this->positionAlign)
+            {
+                case TOP_LEFT:
+                    glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
+                    break;
+                case CENTER:
+                    glfwSetWindowPos(windowStruct->window, this->position.x + windowStruct->screenOffset.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), this->position.y + windowStruct->screenOffset.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
                     break;
             }
         }
@@ -251,7 +334,7 @@ namespace Snake
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         windowStruct->window = glfwCreateWindow(this->size.width, this->size.height, (char*) this->title, NULL, NULL);
-        if (windowStruct->window == 0)
+        if (windowStruct->window == NULL)
         {
             fprintf(stderr, "Failed to create GLFW window.\n");
             return -1;
@@ -278,17 +361,36 @@ namespace Snake
             glfwSetWindowSizeLimits(windowStruct->window, this->size.width, this->size.height, this->size.width, this->size.height);
         }
 
+        {
+            windowStruct->screenOffset = WindowPosition{ 0, 0 };
+            windowStruct->screenSize = WindowSize{ 0, 0 };
+
+            GLFWmonitor* monitor = NULL;
+            switch (this->monitorType)
+            {
+                case PRIMARY:
+                    monitor = glfwGetPrimaryMonitor();
+                    if (monitor == NULL)
+                    {
+                        fprintf(stderr, "Failed to find primary monitor.\n");
+                        return -1;
+                    }
+                    break;
+                case CURRENT:
+                    fprintf(stderr, "GLFW does not support CURRENT monitor mode.\n");
+                    return -1;
+            }
+
+            glfwGetMonitorWorkarea(monitor, &windowStruct->screenOffset.x, &windowStruct->screenOffset.y, (int*) &windowStruct->screenSize.width, (int*) &windowStruct->screenSize.height);
+        }
+
         switch (this->positionAlign)
         {
             case TOP_LEFT:
                 glfwSetWindowPos(windowStruct->window, this->position.x, this->position.y);
                 break;
             case CENTER:
-                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-                int x, y, width, height;
-                glfwGetMonitorWorkarea(monitor, &x, &y, &width, &height);
-
-                glfwSetWindowPos(windowStruct->window, this->position.x + x + ((width / 2) - (this->size.width / 2)), this->position.y + y + ((height / 2) - (this->size.height / 2)));
+                glfwSetWindowPos(windowStruct->window, this->position.x + windowStruct->screenOffset.x + ((windowStruct->screenSize.width / 2) - (this->size.width / 2)), this->position.y + windowStruct->screenOffset.y + ((windowStruct->screenSize.height / 2) - (this->size.height / 2)));
                 break;
         }
 
@@ -422,8 +524,8 @@ namespace Snake
     {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        int x = (int) round(xd);
-        int y = (int) round(yd);
+        int x = (int) floor(xd);
+        int y = (int) floor(yd);
 
         if (context->isMouseLockEnabled() && context->isMouseLocked())
         {
@@ -445,8 +547,8 @@ namespace Snake
     {
         Snake::Window* context = glfwGetContextFromWindow(window);
 
-        int x = (int) round(xd);
-        int y = (int) round(yd);
+        int x = (int) floor(xd);
+        int y = (int) floor(yd);
 
         context->getEventManager()->emitMouseScrollEvent(x, y);
     }
