@@ -111,4 +111,37 @@ namespace Snake
             return std::string(data);
         }
     }
+
+    // Get ready for the most inefficient code you have ever read
+    Snake::KeyStruct getKeyStructFromString(const std::string string)
+    {
+        for (auto entry : keyCodeToStrings)
+        {
+            for (int i = 0; i < entry.second.size(); i++)
+            {
+                if (string.compare(entry.second.at(i)) == 0)
+                {
+                    Snake::Key_t code = entry.first;
+
+                    Snake::KeyMod_t modifiers = 0;
+                    switch (i)
+                    {
+                        case 1:
+                            modifiers = Snake::KeyMod::MOD_SHIFT;
+                            break;
+                        case 2:
+                            modifiers = Snake::KeyMod::MOD_CAPS_LOCK;
+                            break;
+                        case 3:
+                            modifiers = Snake::KeyMod::MOD_SHIFT | Snake::KeyMod::MOD_CAPS_LOCK;
+                            break;
+                    }
+
+                    return Snake::KeyStruct{ .code = code, .modifiers = modifiers, .string = entry.second[i] };
+                }
+            }
+        }
+
+        return Snake::KeyStruct{ .code = Snake::Key::KEY_UNKOWN, .modifiers = 0, .string = "" };
+    }
 };

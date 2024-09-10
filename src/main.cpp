@@ -6,35 +6,37 @@
 #include "window.hpp"
 #include "renderer.hpp"
 
-#ifdef SNAKE_DEBUG_INPUT
-void mouseMoveListener(signed int x, signed int y)
+#include <thread>
+
+#if SNAKE_DEBUG_INPUT
+void mouseMoveListener(const signed int x, const signed int y)
 {
     printf("MouseMove %i %i\n", x, y);
 }
 
-void mouseScrollListener(signed int x, signed int y)
+void mouseScrollListener(const signed int x, const signed int y)
 {
     printf("MouseScroll %i %i\n", x, y);
 }
 
-void buttonDownListener(Snake::ButtonStruct button)
+void buttonDownListener(const Snake::ButtonStruct button)
 {
-    printf("ButtonDown %i %i %x\n", button.scanCode, button.code, button.modifiers);
+    printf("ButtonDown %i %x\n", button.code, button.modifiers);
 }
 
-void buttonUpListener(Snake::ButtonStruct button)
+void buttonUpListener(const Snake::ButtonStruct button)
 {
-    printf("ButtonUp %i %i %x\n", button.scanCode, button.code, button.modifiers);
+    printf("ButtonUp %i %x\n", button.code, button.modifiers);
 }
 
-void keyDownListener(Snake::KeyStruct key)
+void keyDownListener(const Snake::KeyStruct key)
 {
-    printf("KeyDown %i %i %x %s\n", key.scanCode, key.code, key.modifiers, key.string.c_str());
+    printf("KeyDown %i %x %s\n", key.code, key.modifiers, key.string.c_str());
 }
 
-void keyUpListener(Snake::KeyStruct key)
+void keyUpListener(const Snake::KeyStruct key)
 {
-    printf("KeyUp %i %i %x %s\n", key.scanCode, key.code, key.modifiers, key.string.c_str());
+    printf("KeyUp %i %x %s\n", key.code, key.modifiers, key.string.c_str());
 }
 #endif
 
@@ -46,7 +48,7 @@ int main(int argc, char* argv[])
         exit(0);
     }
 
-#ifdef SNAKE_DEBUG_INPUT
+#if SNAKE_DEBUG_INPUT
     window.getEventManager()->registerMouseMoveListener(mouseMoveListener);
     window.getEventManager()->registerMouseScrollListener(mouseScrollListener);
 
@@ -76,11 +78,14 @@ int main(int argc, char* argv[])
 
     game.start();
 
-    while (true)
+    while (window.isRunning())
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 
     renderer.destroy();
     game.destroy();
     window.destroy();
+
+    return 0;
 }
