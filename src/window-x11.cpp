@@ -29,6 +29,8 @@ namespace Snake
         WindowSize screenSize;
     };
 
+    static int* x11RefCount = new int{ 0 };
+
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled)
     {
         this->title = title;
@@ -39,6 +41,22 @@ namespace Snake
 
         this->position = position;
         this->positionAlign = positionAlign;
+        this->monitorType = WindowMonitorType::PRIMARY;
+
+        this->mouseLockEnabled = mouseLockEnabled;
+    }
+
+    Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType, const bool mouseLockEnabled)
+    {
+        this->title = title;
+        this->icon = icon;
+
+        this->size = size;
+        this->resizable = resizable;
+
+        this->position = position;
+        this->positionAlign = positionAlign;
+        this->monitorType = monitorType;
 
         this->mouseLockEnabled = mouseLockEnabled;
     }
@@ -280,10 +298,15 @@ namespace Snake
             return -2;
         }
 
+        if (*x11RefCount == 0)
+        {
+            (*x11RefCount)++;
+
         if (XInitThreads() == 0)
         {
             fprintf(stderr, "Failed to initialize X11.\n");
             return -1;
+        }
         }
 
         this->windowStruct = new Snake::X11WindowStruct();
@@ -447,7 +470,11 @@ namespace Snake
 
         XCloseDisplay(windowStruct->display);
 
+        (*x11RefCount)--;
+        if (*x11RefCount == 0)
+        {
         XFreeThreads();
+        }
 
         delete(Snake::X11WindowStruct*) this->windowStruct;
 
