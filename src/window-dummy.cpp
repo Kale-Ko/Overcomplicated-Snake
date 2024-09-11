@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <termios.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 
 namespace Snake
@@ -262,7 +263,7 @@ namespace Snake
         buf[1] = 0;
 
         while (context->isRunning())
-        {
+        { // Not efficient but it works
             std::cin.read(buf, 1);
             if (std::cin.good())
             {
