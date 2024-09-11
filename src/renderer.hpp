@@ -9,7 +9,7 @@ namespace Snake
     class Renderer
     {
     protected:
-        Snake::Window* window;
+        Snake::Window* const window;
 
         Snake::Game* game;
 
@@ -20,7 +20,7 @@ namespace Snake
         void* rendererStruct;
 
     public:
-        Renderer(Snake::Window* const window, Snake::Game* game);
+        Renderer(Snake::Window* const window, Snake::Game* const game);
         ~Renderer();
 
         Snake::Window* getWindow();

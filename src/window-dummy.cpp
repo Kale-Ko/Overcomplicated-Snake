@@ -20,33 +20,13 @@ namespace Snake
     };
 
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled)
+        : title(title), icon(icon), size(size), resizable(resizable), position(position), positionAlign(positionAlign), monitorType(Snake::WindowMonitorType::PRIMARY), mouseLockEnabled(mouseLockEnabled)
     {
-        this->title = title;
-        this->icon = icon;
-
-        this->size = size;
-        this->resizable = resizable;
-
-        this->position = position;
-        this->positionAlign = positionAlign;
-        this->monitorType = WindowMonitorType::PRIMARY;
-
-        this->mouseLockEnabled = mouseLockEnabled;
     }
 
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType, const bool mouseLockEnabled)
+        : title(title), icon(icon), size(size), resizable(resizable), position(position), positionAlign(positionAlign), monitorType(monitorType), mouseLockEnabled(mouseLockEnabled)
     {
-        this->title = title;
-        this->icon = icon;
-
-        this->size = size;
-        this->resizable = resizable;
-
-        this->position = position;
-        this->positionAlign = positionAlign;
-        this->monitorType = monitorType;
-
-        this->mouseLockEnabled = mouseLockEnabled;
     }
 
     Snake::Window::~Window()

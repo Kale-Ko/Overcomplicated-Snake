@@ -16,11 +16,9 @@
 
 namespace Snake
 {
-    Snake::Renderer::Renderer(Snake::Window* window, Snake::Game* game)
+    Snake::Renderer::Renderer(Snake::Window* const window, Snake::Game* const game)
+        : window(window), game(game)
     {
-        this->window = window;
-
-        this->game = game;
     }
 
     Snake::Renderer::~Renderer()

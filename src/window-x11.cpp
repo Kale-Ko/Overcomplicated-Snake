@@ -25,40 +25,20 @@ namespace Snake
         X11Screen* screen;
         X11Window window;
 
-        WindowPosition screenOffset;
-        WindowSize screenSize;
+        Snake::WindowPosition screenOffset;
+        Snake::WindowSize screenSize;
     };
 
     static int* x11RefCount = new int{ 0 };
 
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const bool mouseLockEnabled)
+        : title(title), icon(icon), size(size), resizable(resizable), position(position), positionAlign(positionAlign), monitorType(Snake::WindowMonitorType::PRIMARY), mouseLockEnabled(mouseLockEnabled)
     {
-        this->title = title;
-        this->icon = icon;
-
-        this->size = size;
-        this->resizable = resizable;
-
-        this->position = position;
-        this->positionAlign = positionAlign;
-        this->monitorType = WindowMonitorType::PRIMARY;
-
-        this->mouseLockEnabled = mouseLockEnabled;
     }
 
     Snake::Window::Window(const char* const title, const Snake::WindowIcon* const icon, const Snake::WindowSize size, const bool resizable, const Snake::WindowPosition position, const Snake::WindowPositionAlign positionAlign, const Snake::WindowMonitorType monitorType, const bool mouseLockEnabled)
+        : title(title), icon(icon), size(size), resizable(resizable), position(position), positionAlign(positionAlign), monitorType(monitorType), mouseLockEnabled(mouseLockEnabled)
     {
-        this->title = title;
-        this->icon = icon;
-
-        this->size = size;
-        this->resizable = resizable;
-
-        this->position = position;
-        this->positionAlign = positionAlign;
-        this->monitorType = monitorType;
-
-        this->mouseLockEnabled = mouseLockEnabled;
     }
 
     Snake::Window::~Window()
@@ -327,8 +307,8 @@ namespace Snake
             return -1;
         }
 
-        windowStruct->screenOffset = WindowPosition{ 0, 0 };
-        windowStruct->screenSize = WindowSize{ (unsigned int) windowStruct->screen->width, (unsigned int) windowStruct->screen->height };
+        windowStruct->screenOffset = Snake::WindowPosition{ 0, 0 };
+        windowStruct->screenSize = Snake::WindowSize{ (unsigned int) windowStruct->screen->width, (unsigned int) windowStruct->screen->height };
 
         {
             X11Window _window, _window2;
@@ -362,16 +342,16 @@ namespace Snake
                             case PRIMARY:
                                 if (xScreenResources->outputs[j] == primaryOutput)
                                 {
-                                    windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
-                                    windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                                    windowStruct->screenOffset = Snake::WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
+                                    windowStruct->screenSize = Snake::WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
                                     found = true;
                                 }
                                 break;
                             case CURRENT:
                                 if (mouseX >= xCrtcInfo->x && mouseY >= xCrtcInfo->y && mouseX < (xCrtcInfo->x + xCrtcInfo->width) && mouseY < (xCrtcInfo->y + xCrtcInfo->height))
                                 {
-                                    windowStruct->screenOffset = WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
-                                    windowStruct->screenSize = WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
+                                    windowStruct->screenOffset = Snake::WindowPosition{ xCrtcInfo->x, xCrtcInfo->y };
+                                    windowStruct->screenSize = Snake::WindowSize{ xCrtcInfo->width, xCrtcInfo->height };
                                     found = true;
                                 }
                                 break;
