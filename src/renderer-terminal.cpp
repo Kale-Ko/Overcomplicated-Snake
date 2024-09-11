@@ -93,6 +93,13 @@ namespace Snake
         winsize ts;
         ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
 
+        if ((ts.ws_col < context->getGame()->getWidth() + 2) || (ts.ws_row < context->getGame()->getHeight() + 3))
+        {
+            printf("Terminal is not large enough! Must be at least %ix%i", context->getGame()->getWidth() + 2, context->getGame()->getHeight() + 3);
+            context->stop();
+            return;
+        }
+
         for (int i = 0; i < ts.ws_row - 1; i++)
         {
             printf("\n");
