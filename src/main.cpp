@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
     window.getEventManager()->registerKeyUpListener(keyUpListener);
 #endif
 
-    Snake::Game game(20, 20, 4, window.getEventManager());
+    Snake::Game game(13, 13, 4, window.getEventManager());
     if (game.init() < 0)
     {
         exit(0);
