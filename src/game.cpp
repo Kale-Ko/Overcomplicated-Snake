@@ -7,14 +7,9 @@
 
 namespace Snake
 {
-    Snake::Game::Game(unsigned int width, unsigned int height, unsigned int initialSize, Snake::EventManager* const eventManager)
+    Snake::Game::Game(const unsigned int width, const unsigned int height, const unsigned int initialSize, Snake::EventManager* const eventManager)
+        : width(width), height(height), initialSize(initialSize), eventManager(eventManager)
     {
-        this->width = width;
-        this->height = height;
-
-        this->initialSize = initialSize;
-
-        this->eventManager = eventManager;
     }
 
     Snake::Game::~Game()
@@ -35,41 +30,53 @@ namespace Snake
         return this->height;
     }
 
+    Snake::GridCell Snake::Game::getCell(const unsigned int x, const unsigned int y)
+    {
+        return this->grid[(y * this->width) + x];
+    }
+
+    void Snake::Game::setCell(const unsigned int x, const unsigned int y, Snake::GridCell cell)
+    {
+        this->grid[(y * this->width) + x] = cell;
+    }
+
     bool Snake::Game::isValid()
     {
         return this->initialized && !this->destroyed;
     }
 
-    void Snake::Game::init()
+    int Snake::Game::init()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Game is destroyed.\n");
-            return;
+            return -2;
         }
         if (this->initialized)
         {
             fprintf(stderr, "Game is already initialized.\n");
-            return;
+            return -2;
         }
 
         this->grid = new GridCell[this->width * this->height];
         this->initialized = true;
 
         this->generateGrid();
+
+        return 1;
     }
 
-    void Snake::Game::destroy()
+    int Snake::Game::destroy()
     {
         if (this->destroyed)
         {
             fprintf(stderr, "Game is already destroyed.\n");
-            return;
+            return -2;
         }
         if (!this->initialized)
         {
             fprintf(stderr, "Game is not initialized.\n");
-            return;
+            return -2;
         }
 
         if (this->running)
@@ -81,6 +88,8 @@ namespace Snake
         this->initialized = false;
 
         delete this->grid;
+
+        return 1;
     }
 
     bool Snake::Game::isRunning()
@@ -90,7 +99,10 @@ namespace Snake
 
     void run(Snake::Game* const context)
     {
-        // TODO
+        while (context->isRunning())
+        {
+            // TODO
+        }
     }
 
     void Snake::Game::start()
@@ -138,5 +150,31 @@ namespace Snake
         }
 
         this->running = false;
+    }
+
+    void Snake::Game::generateGrid()
+    {
+        this->setCell(this->width / 2, this->height / 2, Snake::GridCell{ .type = Snake::CellType::SNAKE_HEAD, .direction = Snake::Direction::EAST });
+
+        for (int x = (this->width / 2) - 1; x > (this->width / 2) - this->initialSize; x--)
+        {
+            this->setCell(x, this->height / 2, Snake::GridCell{ .type = Snake::CellType::SNAKE_TAIL, .direction = Snake::Direction::EAST });
+        }
+
+        this->spawnApple();
+    }
+
+    void Snake::Game::spawnApple()
+    {
+        int x = floor(randomDouble() * this->width);
+        int y = floor(randomDouble() * this->height);
+
+        if (this->getCell(x, y).type == CellType::AIR)
+        {
+            this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::APPLE });
+        } else
+        {
+            this->spawnApple();
+        }
     }
 };

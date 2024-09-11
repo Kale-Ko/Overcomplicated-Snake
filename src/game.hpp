@@ -5,7 +5,7 @@
 
 namespace Snake
 {
-    enum GridCell
+    enum CellType
     {
         AIR,
         SNAKE_HEAD,
@@ -13,30 +13,44 @@ namespace Snake
         APPLE
     };
 
-    // typedef unsigned char GridCell;
+    enum Direction
+    {
+        NORTH,
+        SOUTH,
+        EAST,
+        WEST
+    };
+
+    struct GridCell
+    {
+        Snake::CellType type;
+        Snake::Direction direction;
+    };
 
     class Game
     {
     protected:
-        unsigned int width;
-        unsigned int height;
+        const unsigned int width;
+        const unsigned int height;
 
-        unsigned int initialSize;
+        const unsigned int initialSize;
 
-        Snake::EventManager* eventManager;
+        Snake::EventManager* const eventManager;
 
         bool initialized = false;
         bool destroyed = false;
         bool running = false;
 
-        GridCell* grid;
+        Snake::GridCell* grid;
 
     public:
-        Game(unsigned int width, unsigned int height, unsigned int initialSize, Snake::EventManager* const eventManager);
+        Game(const unsigned int width, const unsigned int height, const unsigned int initialSize, Snake::EventManager* const eventManager);
         ~Game();
 
         unsigned int getWidth();
         unsigned int getHeight();
+        Snake::GridCell getCell(const unsigned int x, const unsigned int y);
+        void setCell(const unsigned int x, const unsigned int y, const Snake::GridCell cell);
 
         bool isValid();
         int init();
@@ -45,6 +59,8 @@ namespace Snake
         bool isRunning();
         void start();
         void stop();
+
+        void update();
 
     protected:
         void generateGrid();

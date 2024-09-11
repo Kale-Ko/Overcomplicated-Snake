@@ -128,7 +128,7 @@ namespace Snake
                     int x = j - 1;
                     int y = i - 1;
 
-                    switch (context->getGame()->getCell(x, y))
+                    switch (context->getGame()->getCell(x, y).type)
                     {
                         case SNAKE_HEAD:
                             printf("+");

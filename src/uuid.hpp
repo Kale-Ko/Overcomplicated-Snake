@@ -17,7 +17,10 @@ namespace Snake
     static std::uniform_int_distribution<unsigned int> intDistribution(0U, 4294967295U);
     static std::uniform_int_distribution<unsigned long> longDistribution(0UL, 18446744073709551615UL);
 
-    static inline unsigned long randomInt()
+    static std::uniform_real_distribution<float> floatDistribution(0.0, 1.0);
+    static std::uniform_real_distribution<double> doubleDistribution(0.0, 1.0);
+
+    static inline unsigned int randomInt()
     {
         return intDistribution(randomEngine);
     }
@@ -25,6 +28,16 @@ namespace Snake
     static inline unsigned long randomLong()
     {
         return longDistribution(randomEngine);
+    }
+
+    static inline double randomFloat()
+    {
+        return floatDistribution(randomEngine);
+    }
+
+    static inline double randomDouble()
+    {
+        return doubleDistribution(randomEngine);
     }
 
     static inline UUID* randomUuid()
