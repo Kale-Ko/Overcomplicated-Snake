@@ -86,15 +86,15 @@ namespace Snake
         return 1;
     }
 
-    void run(Snake::Renderer* const context)
+    void Snake::Renderer::run()
     {
         winsize ts;
         ioctl(STDIN_FILENO, TIOCGWINSZ, &ts);
 
-        if ((ts.ws_col < context->getGame()->getWidth() + 2) || (ts.ws_row < context->getGame()->getHeight() + 3))
+        if ((ts.ws_col < this->game->getWidth() + 2) || (ts.ws_row < this->game->getHeight() + 3))
         {
-            printf("Terminal is not large enough! Must be at least %ix%i", context->getGame()->getWidth() + 2, context->getGame()->getHeight() + 3);
-            context->stop();
+            printf("Terminal is not large enough! Must be at least %ix%i", this->game->getWidth() + 2, this->game->getHeight() + 3);
+            this->stop();
             return;
         }
 
@@ -103,23 +103,23 @@ namespace Snake
             printf("\n");
         }
 
-        while (context->isRunning())
+        while (this->running)
         {
             printf("\x1b[H");
 
-            for (int i = 0; i <= context->getGame()->getHeight() + 1; i++)
+            for (int i = 0; i <= this->game->getHeight() + 1; i++)
             {
-                for (int j = 0; j <= context->getGame()->getWidth() + 1; j++)
+                for (int j = 0; j <= this->game->getWidth() + 1; j++)
                 {
-                    if ((i == 0 || i == context->getGame()->getHeight() + 1) && (j == 0 || j == context->getGame()->getWidth() + 1))
+                    if ((i == 0 || i == this->game->getHeight() + 1) && (j == 0 || j == this->game->getWidth() + 1))
                     {
                         printf("+");
                         continue;
-                    } else if (i == 0 || i == context->getGame()->getHeight() + 1)
+                    } else if (i == 0 || i == this->game->getHeight() + 1)
                     {
                         printf("-");
                         continue;
-                    } else if (j == 0 || j == context->getGame()->getWidth() + 1)
+                    } else if (j == 0 || j == this->game->getWidth() + 1)
                     {
                         printf("|");
                         continue;
@@ -128,7 +128,7 @@ namespace Snake
                     int x = j - 1;
                     int y = i - 1;
 
-                    switch (context->getGame()->getCell(x, y).type)
+                    switch (this->game->getCell(x, y).type)
                     {
                         case SNAKE_HEAD:
                             printf("+");
@@ -178,7 +178,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 

@@ -34,6 +34,9 @@ namespace Snake
         bool isRunning();
         void start();
         void stop();
+
+    protected:
+        void run();
     };
 };
 #endif

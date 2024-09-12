@@ -75,11 +75,11 @@ namespace Snake
         return 1;
     }
 
-    void run(Snake::Renderer* const context)
+    void Snake::Renderer::run()
     {
         // TODO
 
-        while (context->isRunning())
+        while (this->running)
         {
             // TODO
         }
@@ -111,7 +111,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 

@@ -102,6 +102,9 @@ namespace Snake
         bool isMouseLocked();
         void lockMouse();
         void unlockMouse();
+
+    protected:
+        void run();
     };
 };
 #endif

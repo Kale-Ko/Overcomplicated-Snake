@@ -225,7 +225,7 @@ namespace Snake
     {
     }
 
-    void run(Snake::Window* const context, Snake::DummyWindowStruct* const windowStruct)
+    void Snake::Window::run()
     {
         // TODO Handle SIGINT
 
@@ -242,14 +242,14 @@ namespace Snake
         char* buf = new char[2];
         buf[1] = 0;
 
-        while (context->isRunning())
+        while (this->running)
         { // Not efficient but it works
             std::cin.read(buf, 1);
             if (std::cin.good())
             {
                 std::string string = buf;
-                context->getEventManager()->emitKeyDownEvent(0, 0, &string);
-                context->getEventManager()->emitKeyUpEvent(0, 0, &string);
+                this->eventManager.emitKeyDownEvent(0, 0, &string);
+                this->eventManager.emitKeyUpEvent(0, 0, &string);
             }
         }
 
@@ -282,7 +282,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this, (Snake::DummyWindowStruct*) this->windowStruct);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 

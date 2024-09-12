@@ -97,13 +97,15 @@ namespace Snake
         return this->running;
     }
 
-    void run(Snake::Game* const context)
+    void Snake::Game::run()
     {
-        while (context->isRunning())
-        {
-            context->update();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        while (this->running)
+        {
+            this->update();
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
     }
 
@@ -128,7 +130,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 

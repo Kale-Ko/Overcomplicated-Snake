@@ -56,9 +56,13 @@ namespace Snake
 
         unsigned int getWidth();
         unsigned int getHeight();
+
         Snake::GridCell getCell(const unsigned int x, const unsigned int y);
+
+    protected:
         void setCell(const unsigned int x, const unsigned int y, const Snake::GridCell cell);
 
+    public:
         bool isValid();
         int init();
         int destroy();
@@ -67,9 +71,11 @@ namespace Snake
         void start();
         void stop();
 
+    protected:
+        void run();
+
         void update();
 
-    protected:
         void generateGrid();
 
         void spawnApple();

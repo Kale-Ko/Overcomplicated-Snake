@@ -560,8 +560,10 @@ namespace Snake
         XRaiseWindow(windowStruct->display, windowStruct->window);
     }
 
-    void run(Snake::Window* const context, Snake::X11WindowStruct* const windowStruct)
+    void Snake::Window::run()
     {
+        Snake::X11WindowStruct* windowStruct = (Snake::X11WindowStruct*) this->windowStruct;
+
         XSelectInput(windowStruct->display, windowStruct->window, FocusChangeMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
         Atom wmDeleteMessage = XInternAtom(windowStruct->display, "WM_DELETE_WINDOW", False);
@@ -570,7 +572,7 @@ namespace Snake
         XFlush(windowStruct->display);
 
         XEvent event;
-        while (context->isRunning())
+        while (this->running)
         {
             XNextEvent(windowStruct->display, &event);
 
@@ -582,12 +584,12 @@ namespace Snake
                         continue;
                     }
 
-                    if (context->isMouseLockEnabled() && !context->isMouseLocked())
+                    if (this->mouseLockEnabled && !this->mouseLocked)
                     {
-                        context->lockMouse();
+                        this->lockMouse();
                     }
 
-                    context->getEventManager()->emitWindowFocusEvent();
+                    this->eventManager.emitWindowFocusEvent();
 
                     break;
                 case FocusOut:
@@ -596,20 +598,20 @@ namespace Snake
                         continue;
                     }
 
-                    if (context->isMouseLocked())
+                    if (this->mouseLocked)
                     {
-                        context->unlockMouse();
+                        this->unlockMouse();
                     }
 
-                    context->getEventManager()->emitWindowUnfocusEvent();
+                    this->eventManager.emitWindowUnfocusEvent();
 
                     break;
                 case ClientMessage:
                     if ((Atom) event.xclient.data.l[0] == wmDeleteMessage)
                     {
-                        context->getEventManager()->emitWindowCloseEvent();
+                        this->eventManager.emitWindowCloseEvent();
 
-                        context->stop();
+                        this->stop();
                     }
 
                     break;
@@ -620,21 +622,21 @@ namespace Snake
                     }
 
                     Snake::WindowPosition previousPosition;
-                    previousPosition = context->getPosition();
+                    previousPosition = this->position;
                     Snake::WindowSize previousSize;
-                    previousSize = context->getSize();
+                    previousSize = this->size;
 
-                    context->__setPosition(Snake::WindowPosition{ .x = event.xconfigure.x, .y = event.xconfigure.y }, Snake::WindowPositionAlign::TOP_LEFT); // TODO Don't change position align
-                    context->__setSize(Snake::WindowSize{ .width = (unsigned int) event.xconfigure.width, .height = (unsigned int) event.xconfigure.height });
+                    this->__setPosition(Snake::WindowPosition{ .x = event.xconfigure.x, .y = event.xconfigure.y }, Snake::WindowPositionAlign::TOP_LEFT); // TODO Don't change position align
+                    this->__setSize(Snake::WindowSize{ .width = (unsigned int) event.xconfigure.width, .height = (unsigned int) event.xconfigure.height });
 
                     if (event.xconfigure.x != previousPosition.x || event.xconfigure.y != previousPosition.y)
                     {
-                        context->getEventManager()->emitWindowMoveEvent(event.xconfigure.x, event.xconfigure.y);
+                        this->eventManager.emitWindowMoveEvent(event.xconfigure.x, event.xconfigure.y);
                     }
 
                     if ((unsigned int) event.xconfigure.width != previousSize.width || (unsigned int) event.xconfigure.height != previousSize.height)
                     {
-                        context->getEventManager()->emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
+                        this->eventManager.emitWindowResizeEvent(event.xconfigure.width, event.xconfigure.height);
                     }
 
                     break;
@@ -644,19 +646,19 @@ namespace Snake
                         continue;
                     }
 
-                    if (context->isMouseLockEnabled() && context->isMouseLocked())
+                    if (this->mouseLockEnabled && this->mouseLocked)
                     {
-                        if (event.xmotion.x == (int) context->getSize().width / 2 && event.xmotion.y == (int) context->getSize().height / 2)
+                        if (event.xmotion.x == (int) this->size.width / 2 && event.xmotion.y == (int) this->size.height / 2)
                         {
                             continue;
                         }
 
-                        context->getEventManager()->emitMouseMoveEvent(event.xmotion.x - (context->getSize().width / 2), event.xmotion.y - (context->getSize().height / 2));
+                        this->eventManager.emitMouseMoveEvent(event.xmotion.x - (this->size.width / 2), event.xmotion.y - (this->size.height / 2));
 
-                        XWarpPointer(windowStruct->display, None, windowStruct->window, 0, 0, 0, 0, context->getSize().width / 2, context->getSize().height / 2);
+                        XWarpPointer(windowStruct->display, None, windowStruct->window, 0, 0, 0, 0, this->size.width / 2, this->size.height / 2);
                     } else
                     {
-                        context->getEventManager()->emitMouseMoveEvent(event.xmotion.x, event.xmotion.y);
+                        this->eventManager.emitMouseMoveEvent(event.xmotion.x, event.xmotion.y);
                     }
 
                     break;
@@ -668,32 +670,32 @@ namespace Snake
 
                     if (event.xbutton.button == 0x04)
                     {
-                        context->getEventManager()->emitMouseScrollEvent(0.0, 1.0);
+                        this->eventManager.emitMouseScrollEvent(0.0, 1.0);
 
                         continue;
                     } else if (event.xbutton.button == 0x05)
                     {
-                        context->getEventManager()->emitMouseScrollEvent(0.0, -1.0);
+                        this->eventManager.emitMouseScrollEvent(0.0, -1.0);
 
                         continue;
                     } else if (event.xbutton.button == 0x06)
                     {
-                        context->getEventManager()->emitMouseScrollEvent(1.0, 0.0);
+                        this->eventManager.emitMouseScrollEvent(1.0, 0.0);
 
                         continue;
                     } else if (event.xbutton.button == 0x07)
                     {
-                        context->getEventManager()->emitMouseScrollEvent(-1.0, 0.0);
+                        this->eventManager.emitMouseScrollEvent(-1.0, 0.0);
 
                         continue;
                     }
 
-                    if (context->isMouseLockEnabled() && !context->isMouseLocked())
+                    if (this->mouseLockEnabled && !this->mouseLocked)
                     {
-                        context->lockMouse();
+                        this->lockMouse();
                     }
 
-                    context->getEventManager()->emitButtonDownEvent(event.xbutton.button > 0x07 ? event.xbutton.button - 0x04 : event.xbutton.button, event.xbutton.state, NULL);
+                    this->eventManager.emitButtonDownEvent(event.xbutton.button > 0x07 ? event.xbutton.button - 0x04 : event.xbutton.button, event.xbutton.state, NULL);
 
                     break;
                 case ButtonRelease:
@@ -706,7 +708,7 @@ namespace Snake
                         continue;
                     }
 
-                    context->getEventManager()->emitButtonUpEvent(event.xbutton.button > 0x07 ? event.xbutton.button - 0x04 : event.xbutton.button, event.xbutton.state, NULL);
+                    this->eventManager.emitButtonUpEvent(event.xbutton.button > 0x07 ? event.xbutton.button - 0x04 : event.xbutton.button, event.xbutton.state, NULL);
 
                     break;
                 case KeyPress:
@@ -715,12 +717,12 @@ namespace Snake
                         continue;
                     }
 
-                    if (context->isMouseLocked() && event.xkey.keycode == 0x9)
+                    if (this->mouseLocked && event.xkey.keycode == 0x9)
                     {
-                        context->unlockMouse();
+                        this->unlockMouse();
                     }
 
-                    context->getEventManager()->emitKeyDownEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
+                    this->eventManager.emitKeyDownEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
 
                     break;
                 case KeyRelease:
@@ -729,7 +731,7 @@ namespace Snake
                         continue;
                     }
 
-                    context->getEventManager()->emitKeyUpEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
+                    this->eventManager.emitKeyUpEvent(event.xkey.keycode, event.xkey.state, &event.xkey);
 
                     break;
                 default:
@@ -764,7 +766,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this, (Snake::X11WindowStruct*) this->windowStruct);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 

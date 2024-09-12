@@ -599,8 +599,10 @@ namespace Snake
         }
     }
 
-    void run(Snake::Window* context, Snake::GLFWWindowStruct* windowStruct)
+    void Snake::Window::run()
     {
+        Snake::GLFWWindowStruct* windowStruct = (Snake::GLFWWindowStruct*) this->windowStruct;
+
         // glfwMakeContextCurrent(windowStruct->window);
 
         glfwSetWindowFocusCallback(windowStruct->window, &glfwWindowFocusCallback);
@@ -612,7 +614,7 @@ namespace Snake
         glfwSetMouseButtonCallback(windowStruct->window, &glfwButtonCallback);
         glfwSetKeyCallback(windowStruct->window, &glfwKeyCallback);
 
-        while (context->isRunning())
+        while (this->running)
         {
             glfwPollEvents();
         }
@@ -644,7 +646,9 @@ namespace Snake
 
         this->running = true;
 
-        std::thread runThread(&run, this, (Snake::GLFWWindowStruct*) this->windowStruct);
+        std::thread runThread([this]() {
+            run();
+        });
         runThread.detach();
     }
 
