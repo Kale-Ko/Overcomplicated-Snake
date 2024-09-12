@@ -160,6 +160,56 @@ namespace Snake
 
     void Snake::Game::update()
     {
+        int x = this->headPosition.x, y = this->headPosition.y;
+        while (true)
+        {
+            Snake::GridCell cell = this->getCell(x, y);
+            if (cell.type == Snake::CellType::AIR)
+            {
+                break;
+            }
+
+            this->setCell(x, y, Snake::GridCell{ .type = Snake::AIR, .direction = Snake::Direction::NONE });
+
+            switch (cell.direction)
+            {
+                case NORTH:
+                    this->setCell(x, y - 1, cell);
+                    if (cell.type == Snake::CellType::SNAKE_HEAD)
+                    {
+                        this->headPosition.y -= 1;
+                    }
+                    y += 1;
+                    break;
+                case SOUTH:
+                    this->setCell(x, y + 1, cell);
+                    if (cell.type == Snake::CellType::SNAKE_HEAD)
+                    {
+                        this->headPosition.y += 1;
+                    }
+                    y -= 1;
+                    break;
+                case EAST:
+                    this->setCell(x + 1, y, cell);
+                    if (cell.type == Snake::CellType::SNAKE_HEAD)
+                    {
+                        this->headPosition.x += 1;
+                    }
+                    x -= 1;
+                    break;
+                case WEST:
+                    this->setCell(x - 1, y, cell);
+                    if (cell.type == Snake::CellType::SNAKE_HEAD)
+                    {
+                        this->headPosition.x -= 1;
+                    }
+                    x += 1;
+                    break;
+                case NONE:
+                    printf("Error at %i %i\n", x, y);
+                    break;
+            }
+        }
     }
 
     void Snake::Game::generateGrid()
