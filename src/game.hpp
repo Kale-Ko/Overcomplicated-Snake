@@ -77,6 +77,7 @@ namespace Snake
         void run();
 
         void update();
+        void handleKey(const Snake::KeyStruct key);
 
         void generateGrid();
 

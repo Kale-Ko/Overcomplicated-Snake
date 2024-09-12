@@ -99,6 +99,10 @@ namespace Snake
 
     void Snake::Game::run()
     {
+        UUID* keyDownUuid = this->eventManager->registerKeyDownListener([this](Snake::KeyStruct key) {
+            this->handleKey(key);
+        });
+
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         while (this->running)
@@ -106,6 +110,29 @@ namespace Snake
             this->update();
 
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
+
+        this->eventManager->unregisterKeyDownListener(keyDownUuid);
+    }
+
+    void Snake::Game::handleKey(const Snake::KeyStruct key)
+    {
+        switch (key.code)
+        {
+            case Snake::Key::KEY_W:
+                this->headDirection = Snake::Direction::NORTH;
+                break;
+            case Snake::Key::KEY_S:
+                this->headDirection = Snake::Direction::SOUTH;
+                break;
+            case Snake::Key::KEY_D:
+                this->headDirection = Snake::Direction::EAST;
+                break;
+            case Snake::Key::KEY_A:
+                this->headDirection = Snake::Direction::WEST;
+                break;
+            default:
+                break;
         }
     }
 
@@ -202,7 +229,7 @@ namespace Snake
                         this->headPosition.x -= 1;
                     }
                     break;
-                case NONE:
+                default:
                     printf("Error at %i %i\n", x, y);
                     break;
             }
