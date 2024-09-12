@@ -50,6 +50,8 @@ namespace Snake
             unsigned int y;
         } headPosition;
 
+        Snake::Direction headDirection;
+
     public:
         Game(const unsigned int width, const unsigned int height, const unsigned int initialSize, Snake::EventManager* const eventManager);
         ~Game();
