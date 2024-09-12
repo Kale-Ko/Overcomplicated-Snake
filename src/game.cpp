@@ -164,15 +164,17 @@ namespace Snake
         {
             for (int x = 0; x < this->width; x++)
             {
-                this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::AIR });
+                this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::AIR, .direction = Snake::Direction::NONE });
             }
         }
 
-        this->setCell(this->width / 2, this->height / 2, Snake::GridCell{ .type = Snake::CellType::SNAKE_HEAD, .direction = Snake::Direction::EAST });
+        this->headPosition = { .x = this->width / 2, .y = this->height / 2 };
 
-        for (int x = (this->width / 2) - 1; x > (this->width / 2) - this->initialSize; x--)
+        this->setCell(this->headPosition.x, this->headPosition.y, Snake::GridCell{ .type = Snake::CellType::SNAKE_HEAD, .direction = Snake::Direction::EAST });
+
+        for (int x = (this->headPosition.x) - 1; x > (this->headPosition.x) - this->initialSize; x--)
         {
-            this->setCell(x, this->height / 2, Snake::GridCell{ .type = Snake::CellType::SNAKE_TAIL, .direction = Snake::Direction::EAST });
+            this->setCell(x, this->headPosition.y, Snake::GridCell{ .type = Snake::CellType::SNAKE_TAIL, .direction = Snake::Direction::EAST });
         }
 
         this->spawnApple();
@@ -185,7 +187,7 @@ namespace Snake
 
         if (this->getCell(x, y).type == CellType::AIR)
         {
-            this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::APPLE });
+            this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::APPLE, .direction = Snake::Direction::NONE });
         } else
         {
             this->spawnApple();

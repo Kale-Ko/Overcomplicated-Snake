@@ -15,6 +15,7 @@ namespace Snake
 
     enum Direction
     {
+        NONE,
         NORTH,
         SOUTH,
         EAST,
@@ -42,6 +43,12 @@ namespace Snake
         bool running = false;
 
         Snake::GridCell* grid;
+
+        struct
+        {
+            unsigned int x;
+            unsigned int y;
+        } headPosition;
 
     public:
         Game(const unsigned int width, const unsigned int height, const unsigned int initialSize, Snake::EventManager* const eventManager);
