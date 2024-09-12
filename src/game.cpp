@@ -101,7 +101,9 @@ namespace Snake
     {
         while (context->isRunning())
         {
-            // TODO
+            context->update();
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
     }
 
@@ -152,8 +154,20 @@ namespace Snake
         this->running = false;
     }
 
+    void Snake::Game::update()
+    {
+    }
+
     void Snake::Game::generateGrid()
     {
+        for (int y = 0; y < this->height; y++)
+        {
+            for (int x = 0; x < this->width; x++)
+            {
+                this->setCell(x, y, Snake::GridCell{ .type = Snake::CellType::AIR });
+            }
+        }
+
         this->setCell(this->width / 2, this->height / 2, Snake::GridCell{ .type = Snake::CellType::SNAKE_HEAD, .direction = Snake::Direction::EAST });
 
         for (int x = (this->width / 2) - 1; x > (this->width / 2) - this->initialSize; x--)
