@@ -192,7 +192,7 @@ namespace Snake
         while (true)
         {
             Snake::GridCell cell = this->getCell(x, y);
-            if (cell.type == Snake::CellType::AIR)
+            if (cell.type == Snake::CellType::AIR || (cell.type == Snake::CellType::SNAKE_HEAD && previousCell.type != Snake::CellType::AIR))
             {
                 break;
             }
