@@ -2,7 +2,10 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
 
+#include <queue>
+#include <algorithm>
 #include <thread>
 
 namespace Snake
@@ -120,16 +123,19 @@ namespace Snake
         switch (key.code)
         {
             case Snake::Key::KEY_W:
-                this->headDirection = Snake::Direction::NORTH;
+                this->actionQueue.push(Action::HEAD_NORTH);
                 break;
             case Snake::Key::KEY_S:
-                this->headDirection = Snake::Direction::SOUTH;
+                this->actionQueue.push(Action::HEAD_SOUTH);
                 break;
             case Snake::Key::KEY_D:
-                this->headDirection = Snake::Direction::EAST;
+                this->actionQueue.push(Action::HEAD_EAST);
                 break;
             case Snake::Key::KEY_A:
-                this->headDirection = Snake::Direction::WEST;
+                this->actionQueue.push(Action::HEAD_WEST);
+                break;
+            case Snake::Key::KEY_SPACE:
+                this->actionQueue.push(Action::PAUSE);
                 break;
             default:
                 break;
@@ -187,6 +193,52 @@ namespace Snake
 
     void Snake::Game::update()
     {
+        while (!this->actionQueue.empty())
+        {
+            Snake::Action action = this->actionQueue.front();
+            this->actionQueue.pop();
+
+            bool ranAction = false;
+            switch (action)
+            {
+                case HEAD_NORTH:
+                    if (this->headDirection != Snake::Direction::SOUTH)
+                    {
+                        this->headDirection = Snake::Direction::NORTH;
+                        ranAction = true;
+                    }
+                    break;
+                case HEAD_SOUTH:
+                    if (this->headDirection != Snake::Direction::NORTH)
+                    {
+                        this->headDirection = Snake::Direction::SOUTH;
+                        ranAction = true;
+                    }
+                    break;
+                case HEAD_EAST:
+                    if (this->headDirection != Snake::Direction::WEST)
+                    {
+                        this->headDirection = Snake::Direction::EAST;
+                        ranAction = true;
+                    }
+                    break;
+                case HEAD_WEST:
+                    if (this->headDirection != Snake::Direction::EAST)
+                    {
+                        this->headDirection = Snake::Direction::WEST;
+                        ranAction = true;
+                    }
+                    break;
+                case PAUSE:
+                    // panic();
+                    break;
+            }
+            if (ranAction)
+            {
+                break;
+            }
+        }
+
         int x = this->headPosition.x, y = this->headPosition.y;
         Snake::GridCell previousCell = Snake::GridCell{ .type = Snake::CellType::AIR, .direction = this->headDirection };
         while (true)

@@ -3,6 +3,8 @@
 
 #include "windowevents.hpp"
 
+#include <queue>
+
 namespace Snake
 {
     enum CellType
@@ -28,6 +30,15 @@ namespace Snake
         Snake::Direction direction;
     };
 
+    enum Action
+    {
+        HEAD_NORTH,
+        HEAD_SOUTH,
+        HEAD_EAST,
+        HEAD_WEST,
+        PAUSE
+    };
+
     class Game
     {
     protected:
@@ -51,6 +62,8 @@ namespace Snake
         } headPosition;
 
         Snake::Direction headDirection;
+
+        std::queue<Snake::Action> actionQueue;
 
     public:
         Game(const unsigned int width, const unsigned int height, const unsigned int initialSize, Snake::EventManager* const eventManager);
