@@ -7,6 +7,7 @@
 #include <queue>
 #include <algorithm>
 #include <thread>
+#include <chrono>
 
 namespace Snake
 {
@@ -106,11 +107,12 @@ namespace Snake
             this->handleKey(key);
         });
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
         while (this->running)
         {
-            this->update();
+            if (!this->paused)
+            {
+                this->update();
+            }
 
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
@@ -120,22 +122,24 @@ namespace Snake
 
     void Snake::Game::handleKey(const Snake::KeyStruct key)
     {
+        unsigned long timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
         switch (key.code)
         {
             case Snake::Key::KEY_W:
-                this->actionQueue.push(Action::HEAD_NORTH);
+                this->actionQueue.push(Snake::Action{ .type = Snake::ActionType::HEAD_NORTH, .timestamp = timestamp });
                 break;
             case Snake::Key::KEY_S:
-                this->actionQueue.push(Action::HEAD_SOUTH);
+                this->actionQueue.push(Snake::Action{ .type = Snake::ActionType::HEAD_SOUTH, .timestamp = timestamp });
                 break;
             case Snake::Key::KEY_D:
-                this->actionQueue.push(Action::HEAD_EAST);
+                this->actionQueue.push(Snake::Action{ .type = Snake::ActionType::HEAD_EAST, .timestamp = timestamp });
                 break;
             case Snake::Key::KEY_A:
-                this->actionQueue.push(Action::HEAD_WEST);
+                this->actionQueue.push(Snake::Action{ .type = Snake::ActionType::HEAD_WEST, .timestamp = timestamp });
                 break;
             case Snake::Key::KEY_SPACE:
-                this->actionQueue.push(Action::PAUSE);
+                this->paused = !this->paused;
                 break;
             default:
                 break;
@@ -193,13 +197,20 @@ namespace Snake
 
     void Snake::Game::update()
     {
+        unsigned long timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
         while (!this->actionQueue.empty())
         {
             Snake::Action action = this->actionQueue.front();
             this->actionQueue.pop();
 
+            if (timestamp - action.timestamp > 1000)
+            {
+                continue;
+            }
+
             bool ranAction = false;
-            switch (action)
+            switch (action.type)
             {
                 case HEAD_NORTH:
                     if (this->headDirection != Snake::Direction::SOUTH)
@@ -228,9 +239,6 @@ namespace Snake
                         this->headDirection = Snake::Direction::WEST;
                         ranAction = true;
                     }
-                    break;
-                case PAUSE:
-                    // panic();
                     break;
             }
             if (ranAction)

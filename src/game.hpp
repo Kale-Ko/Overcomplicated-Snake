@@ -30,13 +30,18 @@ namespace Snake
         Snake::Direction direction;
     };
 
-    enum Action
+    enum ActionType
     {
         HEAD_NORTH,
         HEAD_SOUTH,
         HEAD_EAST,
-        HEAD_WEST,
-        PAUSE
+        HEAD_WEST
+    };
+
+    struct Action
+    {
+        Snake::ActionType type;
+        unsigned long timestamp;
     };
 
     class Game
@@ -63,6 +68,7 @@ namespace Snake
 
         Snake::Direction headDirection;
 
+        bool paused = true;
         std::queue<Snake::Action> actionQueue;
 
     public:
