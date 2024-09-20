@@ -133,6 +133,9 @@ namespace Snake
                         case SNAKE_HEAD:
                             printf("+");
                             break;
+                        case DEAD_SNAKE_HEAD:
+                            printf("x");
+                            break;
                         case SNAKE_TAIL:
                             printf("#");
                             break;

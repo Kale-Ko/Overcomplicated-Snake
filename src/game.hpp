@@ -11,6 +11,7 @@ namespace Snake
     {
         AIR,
         SNAKE_HEAD,
+        DEAD_SNAKE_HEAD,
         SNAKE_TAIL,
         APPLE
     };
