@@ -259,39 +259,49 @@ namespace Snake
 
             this->setCell(x, y, Snake::GridCell{ .type = Snake::AIR, .direction = cell.direction });
 
+            int offsetX, offsetY;
             switch (previousCell.direction)
             {
                 case NORTH:
-                    this->setCell(x, y - 1, Snake::GridCell{ .type = cell.type, .direction = previousCell.direction });
-                    if (cell.type == Snake::CellType::SNAKE_HEAD)
-                    {
-                        this->headPosition.y -= 1;
-                    }
+                    offsetX = 0;
+                    offsetY = -1;
                     break;
                 case SOUTH:
-                    this->setCell(x, y + 1, Snake::GridCell{ .type = cell.type, .direction = previousCell.direction });
-                    if (cell.type == Snake::CellType::SNAKE_HEAD)
-                    {
-                        this->headPosition.y += 1;
-                    }
+                    offsetX = 0;
+                    offsetY = 1;
                     break;
                 case EAST:
-                    this->setCell(x + 1, y, Snake::GridCell{ .type = cell.type, .direction = previousCell.direction });
-                    if (cell.type == Snake::CellType::SNAKE_HEAD)
-                    {
-                        this->headPosition.x += 1;
-                    }
+                    offsetX = 1;
+                    offsetY = 0;
                     break;
                 case WEST:
-                    this->setCell(x - 1, y, Snake::GridCell{ .type = cell.type, .direction = previousCell.direction });
-                    if (cell.type == Snake::CellType::SNAKE_HEAD)
-                    {
-                        this->headPosition.x -= 1;
-                    }
+                    offsetX = -1;
+                    offsetY = 0;
                     break;
                 default:
+                    offsetX = 0;
+                    offsetY = 0;
+
                     printf("Error at %i %i\n", x, y);
                     break;
+            }
+
+            Snake::GridCell nextCell = this->getCell(x + offsetX, y + offsetY);
+
+            if (nextCell.type == Snake::CellType::AIR || nextCell.type == Snake::CellType::APPLE)
+            {
+                this->setCell(x + offsetX, y + offsetY, Snake::GridCell{ .type = cell.type, .direction = previousCell.direction });
+                if (cell.type == Snake::CellType::SNAKE_HEAD)
+                {
+                    this->headPosition.x += offsetX;
+                    this->headPosition.y += offsetY;
+                }
+            } else
+            {
+                this->setCell(x, y, Snake::GridCell{ .type = Snake::DEAD_SNAKE_HEAD, .direction = cell.direction });
+
+                this->stop();
+                break;
             }
 
             switch (cell.direction)
