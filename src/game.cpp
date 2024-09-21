@@ -249,6 +249,7 @@ namespace Snake
 
         int x = this->headPosition.x, y = this->headPosition.y;
         Snake::GridCell previousCell = Snake::GridCell{ .type = Snake::CellType::AIR, .direction = this->headDirection };
+        bool ateApple = false;
         while (true)
         {
             Snake::GridCell cell = this->getCell(x, y);
@@ -304,6 +305,11 @@ namespace Snake
                     this->headPosition.x += offsetX;
                     this->headPosition.y += offsetY;
                 }
+
+                if (nextCell.type == Snake::CellType::APPLE)
+                {
+                    ateApple = true;
+                }
             } else
             {
                 this->setCell(x, y, Snake::GridCell{ .type = Snake::DEAD_SNAKE_HEAD, .direction = cell.direction });
@@ -332,6 +338,40 @@ namespace Snake
             }
 
             previousCell = cell;
+        }
+
+        if (ateApple)
+        {
+            int offsetX, offsetY;
+            switch (previousCell.direction)
+            {
+                case NORTH:
+                    offsetX = 0;
+                    offsetY = -1;
+                    break;
+                case SOUTH:
+                    offsetX = 0;
+                    offsetY = 1;
+                    break;
+                case EAST:
+                    offsetX = 1;
+                    offsetY = 0;
+                    break;
+                case WEST:
+                    offsetX = -1;
+                    offsetY = 0;
+                    break;
+                default:
+                    offsetX = 0;
+                    offsetY = 0;
+
+                    printf("Error at %i %i\n", x, y);
+                    break;
+            }
+
+            this->setCell(x + offsetX, y + offsetY, Snake::GridCell{ .type = Snake::SNAKE_TAIL, .direction = previousCell.direction });
+
+            this->spawnApple();
         }
     }
 
