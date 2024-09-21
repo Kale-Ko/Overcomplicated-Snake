@@ -286,6 +286,14 @@ namespace Snake
                     break;
             }
 
+            if (x + offsetX < 0 || x + offsetX >= this->width || y + offsetY < 0 || y + offsetY >= this->height)
+            {
+                this->setCell(x, y, Snake::GridCell{ .type = Snake::DEAD_SNAKE_HEAD, .direction = cell.direction });
+
+                this->stop();
+                break;
+            }
+
             Snake::GridCell nextCell = this->getCell(x + offsetX, y + offsetY);
 
             if (nextCell.type == Snake::CellType::AIR || nextCell.type == Snake::CellType::APPLE)
