@@ -386,7 +386,7 @@ namespace Snake
         }
 
         this->headPosition = { .x = this->width / 2, .y = this->height / 2 };
-        this->headDirection = Snake::Direction::NORTH;
+        this->headDirection = Snake::Direction::EAST;
 
         this->setCell(this->headPosition.x, this->headPosition.y, Snake::GridCell{ .type = Snake::CellType::SNAKE_HEAD, .direction = Snake::Direction::EAST });
 
